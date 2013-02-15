@@ -1,6 +1,8 @@
 package io.sunstrike.mods.liquidenergy;
 
 import io.sunstrike.mods.liquidenergy.blocks.BlockLiquifierEU;
+import io.sunstrike.mods.liquidenergy.blocks.TileLiquifierEU;
+import io.sunstrike.mods.liquidenergy.items.LiquidNavitas;
 
 import java.util.HashMap;
 import java.util.logging.Logger;
@@ -8,9 +10,9 @@ import java.util.logging.Logger;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -40,12 +42,13 @@ public class LiquidEnergy {
 	public static Block liquifierMJ;
 	public static Block generatorEU;
 	public static Block generatorMJ;
+	public static Item itemLiquidNavitas;
 
 	// ID MAPS
-	protected static HashMap<String, Integer> bIDs = new HashMap();
+	public static HashMap<String, Integer> bIDs = new HashMap();
 	
 	// LOGGERS
-	protected static Logger logger = Logger.getLogger("LiquidEnergy");
+	public static Logger logger = Logger.getLogger("LiquidEnergy");
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event) {
@@ -60,22 +63,35 @@ public class LiquidEnergy {
 		bIDs.put("BlockLiquifyMJ", config.getBlock("BlockLiquifyMJ", 1461).getInt());
 		bIDs.put("BlockGeneratorEU", config.getBlock("BlockGeneratorEU", 1462).getInt());
 		bIDs.put("BlockGeneratorMJ", config.getBlock("BlockGeneratorMJ", 1463).getInt());
+		bIDs.put("LiquidNavitas", config.getItem("LiquidNavitas", 1464).getInt());
 		config.save();
 	}
 
 	@Init
 	public void load(FMLInitializationEvent event) {
 		proxy.registerRenderers();
+		
+		// General (Navitas registration)
+		itemLiquidNavitas = new LiquidNavitas(bIDs.get("LiquidNavitas").intValue())
+			.setItemName("itemLiquidNavitas")
+			.setCreativeTab(CreativeTabs.tabRedstone);
+		GameRegistry.registerItem(itemLiquidNavitas, "itemLiquidNavitas");
+		LanguageRegistry.addName(itemLiquidNavitas, "Navitas");
+		
+		// Boolean for no-mod catch
+		boolean modsAvailable = false;
+		
+		// IC2
 		try {
 			Class ic2 = Class.forName("ic2.core.IC2");
 			if (ic2 == null) { throw new Exception(); }
 			// Assume we have IC2
+			GameRegistry.registerTileEntity(TileLiquifierEU.class, "TileLiquifierEU");
 			liquifierEU = new BlockLiquifierEU(bIDs.get("BlockLiquifyEU").intValue(), 0, Material.anvil)
-				.setHardness(1.0F)
 				.setStepSound(Block.soundWoodFootstep)
-				.setBlockName("BlockLiquifyEU")
+				.setBlockName("blockLiquifyEU")
 				.setCreativeTab(CreativeTabs.tabRedstone);
-			GameRegistry.registerBlock(liquifierEU, "BlockLiquifyEU");
+			GameRegistry.registerBlock(liquifierEU, "blockLiquifyEU");
 			LanguageRegistry.addName(liquifierEU, "EU Liquifier");
 			MinecraftForge.setBlockHarvestLevel(liquifierEU, "pickaxe", 0);
 			
@@ -90,10 +106,17 @@ public class LiquidEnergy {
 			MinecraftForge.setBlockHarvestLevel(generatorEU, "pickaxe", 0);*/
 			
 			logger.info("Loaded IC2 integration. Enabling EU liquifier and generator.");
+			modsAvailable = true;
 		} catch (Exception e) {
 			logger.warning("Could not find IC2! Disabling EU liquifier and generator.");
 			logger.warning(e.toString());
 		}
+		
+		// BuildCraft
+		// TODO: ALL the buildcraft things
+		
+		// Catch lack of ANY power mods
+		if (!modsAvailable) throw new RuntimeException("Must have Buildcraft and/or IC2 installed!");
 	}
 
 	@PostInit

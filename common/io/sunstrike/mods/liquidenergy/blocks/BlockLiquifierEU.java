@@ -12,11 +12,17 @@ public class BlockLiquifierEU extends Block {
 
 	public BlockLiquifierEU(int id, int tex, Material mat) {
 		super(id, tex, mat);
+		setHardness(5F);
 	}
 	
 	@Override
 	public String getTextureFile() {
 		return CommonProxy.BLOCK_PNG;
+	}
+	
+	@Override
+	public boolean hasTileEntity(int meta) {
+		return true;
 	}
 	
 	@Override
@@ -26,7 +32,7 @@ public class BlockLiquifierEU extends Block {
 	
 	@Override
 	public boolean isOpaqueCube() {
-		return false;
+		return true;
 	}
 	
 	@Override
