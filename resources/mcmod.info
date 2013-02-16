@@ -1,0 +1,19 @@
+[
+{
+  "modid": "LiquidEnergy",
+  "name": "Liquid Energy",
+  "description": "Converting power to/from a liquid.",
+  "version": "0.0.1",
+  "credits": "Created by Sunstrike, design help from EcuTruin",
+  "logoFile": "",
+  "mcversion": "1.4.7",
+  "url": "",
+  "updateUrl": "",
+  "authors": [ "Sunstrike" ],
+  "parent":"",
+  "screenshots": [],
+  "dependencies": [
+     "mod_MinecraftForge"
+  ]
+}
+]
