@@ -4,9 +4,9 @@ import net.minecraft.item.Item;
 import net.minecraftforge.liquids.ILiquid;
 import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 
-public class LiquidNavitas extends Item implements ILiquid {
+public class ItemLiquidNavitas extends Item implements ILiquid {
 	
-	public LiquidNavitas(int id) {
+	public ItemLiquidNavitas(int id) {
 		super(id);
 		setMaxStackSize(64);
 		setIconIndex(0);

@@ -1,14 +1,17 @@
-#Forge Transformer
-**Current MC ver:** `1.4.5 release`
+#LiquidEnergy
+**Current MC ver:** `1.4.7 release`
 
-**Current BC API ver:** `3.2.0 release`
+**API vers:** see `common/API_VERSIONS`
 
-Simple, automated transformation of items in the Forge Ore dictionary akin to Forge Lexicon.
+Converting energy (EU/MJ) to a Forge liquid and back again.
 
 ##License
-This mod itself is licensed under the MIT License (See LICENSE).
+This mod itself is licensed under the MIT License (See `LICENSE.md`).
 
-It includes the Buildcraft API, which is licensed under the MMPL v1 - Sources are available at [SirSengirs GitHub](https://github.com/SirSengir/BuildCraft) and the mods site is at [mod-buildcraft.com](http://www.mod-buildcraft.com). ForgeTransformer uses the buildcraft.api.* package.
+It includes the Buildcraft API and IC2 API. More details are available in `LICENSE.md`
 
 ##Building
-Simple call `ant` in the build directory to build.
+Simply call `ant` in the build directory to build.
+
+##Developing
+For development, call `ant linksrc` to automatically setup Forge/MCP and symlink the source into place. This is completely safe on UNIX systems. Note that on Windows, this uses Junctions which can cause issues. Remove them by hand before running a real build. This warning is repeated during the link.

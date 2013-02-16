@@ -1,4 +1,4 @@
-package io.sunstrike.mods.liquidenergy.blocks;
+package io.sunstrike.mods.liquidenergy.blocks.tiles;
 
 import java.util.LinkedList;
 
@@ -13,6 +13,8 @@ import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,7 +32,7 @@ public class TileLiquifierEU extends TileEntity implements IEnergySink, ITankCon
 	private boolean hasAddedToENet = false;
 	
 	public TileLiquifierEU() {
-		LiquidEnergy.logger.info("Created TE Liquifier EU.");
+		//LiquidEnergy.logger.info("Created TE Liquifier EU.");
 		outputBuffer.setTankPressure(100);
 	}
 	
@@ -96,26 +98,19 @@ public class TileLiquifierEU extends TileEntity implements IEnergySink, ITankCon
 
 	@Override
 	public int demandsEnergy() {
-		/*int amount;
-		try {
-			amount = outputBuffer.getCapacity() - outputBuffer.getLiquid().amount;
-			if (amount > 32) amount = 32;
-		} catch (Exception e) {
-			amount = 32;
-		}
-		return amount;*/
-		int out = outputBuffer.fill(new LiquidStack(LiquidEnergy.itemLiquidNavitas, 32), false);
+		// This would be a "tier 1" converter (LV) (1Nav/8EU)
+		int out = outputBuffer.fill(new LiquidStack(LiquidEnergy.itemLiquidNavitas, 4), false) * 8;
 		return out;
 	}
 
 	@Override
 	public int injectEnergy(Direction directionFrom, int amount) {
-		return amount - outputBuffer.fill(new LiquidStack(LiquidEnergy.itemLiquidNavitas, amount), true);
+		return amount/8 - outputBuffer.fill(new LiquidStack(LiquidEnergy.itemLiquidNavitas, amount/8), true);
 	}
 
 	@Override
 	public int getMaxSafeInput() {
-		return Integer.MAX_VALUE;
+		return 32;
 	}
 
 	@Override
@@ -152,6 +147,39 @@ public class TileLiquifierEU extends TileEntity implements IEnergySink, ITankCon
 	@Override
 	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) {
 		return null;
+	}
+
+	public void sendDebugToPlayer(EntityPlayer player) {
+		player.addChatMessage("[TileLiquifierEU] On ENet: " + hasAddedToENet);
+		LiquidStack li = outputBuffer.getLiquid();
+		if (li == null) {
+			player.addChatMessage("[TileLiquifierEU] Output buffer: 0/8000");
+		} else {
+			player.addChatMessage("[TileLiquifierEU] Output buffer: " + li.amount + "/8000");
+		}
+	}
+	
+	// Read/Write NBT overrides for buffer
+	@Override
+	public void writeToNBT(NBTTagCompound nbt) {
+		int tankLevel = 0;
+		
+		LiquidStack li = outputBuffer.getLiquid();
+		if (li != null) tankLevel = li.amount;
+		nbt.setInteger("tankLevel", tankLevel);
+
+		super.writeToNBT(nbt);
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		if (nbt.hasKey("tankLevel")) {
+			int tankLevel = nbt.getInteger("tankLevel");
+			outputBuffer.setLiquid(new LiquidStack(LiquidEnergy.itemLiquidNavitas, tankLevel));
+		}
+
+		super.readFromNBT(nbt);
+		LiquidEnergy.logger.info("[EULiq] Restored TE state for " + xCoord + ", " + yCoord + ", " + zCoord);
 	}
 
 }
