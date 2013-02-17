@@ -17,6 +17,12 @@ import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 
+/**
+ * TileGeneratorEU
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
+
 public class TileGeneratorEU extends TileEntity implements IEnergySource, ITankContainer {
 	
 	// Internal buffers

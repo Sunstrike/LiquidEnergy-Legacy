@@ -1,5 +1,11 @@
 package io.sunstrike.mods.liquidenergy.configuration;
 
+/**
+ * Settings
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
+
 public class Settings {
 	
 	// Blocks

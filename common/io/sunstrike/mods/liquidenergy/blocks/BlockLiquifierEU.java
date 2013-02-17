@@ -1,7 +1,6 @@
 package io.sunstrike.mods.liquidenergy.blocks;
 
 import io.sunstrike.mods.liquidenergy.CommonProxy;
-import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.blocks.tiles.TileLiquifierEU;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -10,6 +9,12 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+/**
+ * BlockLiquifierEU
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 
 public class BlockLiquifierEU extends Block {
 

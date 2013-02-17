@@ -3,6 +3,12 @@ package io.sunstrike.mods.liquidenergy.items;
 import net.minecraft.item.Item;
 import net.minecraftforge.liquids.ILiquid;
 
+/**
+ * ItemLiquidNavitas
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
+
 public class ItemLiquidNavitas extends Item implements ILiquid {
 	
 	public ItemLiquidNavitas(int id) {

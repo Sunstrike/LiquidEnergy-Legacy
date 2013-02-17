@@ -1,5 +1,11 @@
 package io.sunstrike.mods.liquidenergy;
 
+/**
+ * CommonProxy
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
+
 public class CommonProxy {
 	
 	public static final String ITEMS_PNG = "/liquidenergy/items.png";

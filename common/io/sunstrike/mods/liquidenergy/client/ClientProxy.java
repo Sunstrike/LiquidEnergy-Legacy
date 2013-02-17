@@ -1,7 +1,13 @@
 package io.sunstrike.mods.liquidenergy.client;
 
-import net.minecraftforge.client.MinecraftForgeClient;
 import io.sunstrike.mods.liquidenergy.CommonProxy;
+import net.minecraftforge.client.MinecraftForgeClient;
+
+/**
+ * ClientProxy
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 
 public class ClientProxy extends CommonProxy {
 	

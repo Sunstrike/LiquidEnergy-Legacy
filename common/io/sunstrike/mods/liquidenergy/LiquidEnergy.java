@@ -28,6 +28,12 @@ import net.minecraftforge.common.MinecraftForge;
 
 import java.util.logging.Logger;
 
+/**
+ * LiquidEnergy
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
+
 @Mod(modid="LiquidEnergy", name="Liquid Energy", version="0.0.1", dependencies="after:IC2;after:BuildCraft|Core")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false)
 public class LiquidEnergy {
