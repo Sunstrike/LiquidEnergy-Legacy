@@ -1,22 +1,12 @@
 package io.sunstrike.mods.liquidenergy.blocks.tiles;
 
-import java.util.LinkedList;
-
-import buildcraft.api.gates.IAction;
-import buildcraft.api.gates.IActionProvider;
-import buildcraft.api.gates.ITrigger;
-import buildcraft.api.gates.ITriggerProvider;
-import buildcraft.api.transport.IPipe;
 import ic2.api.Direction;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileSourceEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergySink;
 import ic2.api.energy.tile.IEnergySource;
 import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.Settings;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -30,7 +20,7 @@ import net.minecraftforge.liquids.LiquidTank;
 public class TileGeneratorEU extends TileEntity implements IEnergySource, ITankContainer {
 	
 	// Internal buffers
-	private LiquidTank inputBuffer = new LiquidTank(8000);
+	private final LiquidTank inputBuffer = new LiquidTank(8000);
 	private int powerBuffer = 0;
 	
 	// Used to check we're already on the ENet
@@ -162,8 +152,7 @@ public class TileGeneratorEU extends TileEntity implements IEnergySource, ITankC
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		int tankLevel = 0;
-		int powerLevel = 0;
-		
+
 		// inputBuffer
 		LiquidStack li = inputBuffer.getLiquid();
 		if (li != null) tankLevel = li.amount;

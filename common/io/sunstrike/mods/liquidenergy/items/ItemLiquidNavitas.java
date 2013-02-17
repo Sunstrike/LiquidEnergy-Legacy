@@ -2,7 +2,6 @@ package io.sunstrike.mods.liquidenergy.items;
 
 import net.minecraft.item.Item;
 import net.minecraftforge.liquids.ILiquid;
-import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 
 public class ItemLiquidNavitas extends Item implements ILiquid {
 	
@@ -13,7 +12,7 @@ public class ItemLiquidNavitas extends Item implements ILiquid {
 	}
 	
 	public String getTextureFile() {
-		return LiquidEnergy.proxy.ITEMS_PNG;
+		return io.sunstrike.mods.liquidenergy.CommonProxy.ITEMS_PNG;
 	}
 
 	@Override

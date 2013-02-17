@@ -1,18 +1,10 @@
 package io.sunstrike.mods.liquidenergy.blocks.tiles;
 
-import java.util.LinkedList;
-
-import buildcraft.api.gates.IAction;
-import buildcraft.api.gates.IActionProvider;
-import buildcraft.api.gates.ITrigger;
-import buildcraft.api.gates.ITriggerProvider;
-import buildcraft.api.transport.IPipe;
 import ic2.api.Direction;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySink;
 import io.sunstrike.mods.liquidenergy.LiquidEnergy;
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -26,7 +18,7 @@ import net.minecraftforge.liquids.LiquidTank;
 public class TileLiquifierEU extends TileEntity implements IEnergySink, ITankContainer {
 	
 	// Internal buffers
-	private LiquidTank outputBuffer = new LiquidTank(8000);
+	private final LiquidTank outputBuffer = new LiquidTank(8000);
 	
 	// Used to check we're already on the ENet
 	private boolean hasAddedToENet = false;
@@ -99,8 +91,7 @@ public class TileLiquifierEU extends TileEntity implements IEnergySink, ITankCon
 	@Override
 	public int demandsEnergy() {
 		// This would be a "tier 1" converter (LV) (1Nav/8EU)
-		int out = outputBuffer.fill(new LiquidStack(LiquidEnergy.itemLiquidNavitas, 4), false) * 8;
-		return out;
+		return outputBuffer.fill(new LiquidStack(LiquidEnergy.itemLiquidNavitas, 4), false) * 8;
 	}
 
 	@Override

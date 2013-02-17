@@ -1,20 +1,5 @@
 package io.sunstrike.mods.liquidenergy;
 
-import io.sunstrike.mods.liquidenergy.blocks.BlockGeneratorEU;
-import io.sunstrike.mods.liquidenergy.blocks.BlockLiquifierEU;
-import io.sunstrike.mods.liquidenergy.blocks.tiles.TileGeneratorEU;
-import io.sunstrike.mods.liquidenergy.blocks.tiles.TileLiquifierEU;
-import io.sunstrike.mods.liquidenergy.configuration.Settings;
-import io.sunstrike.mods.liquidenergy.items.ItemLiquidNavitas;
-
-import java.util.logging.Logger;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -28,6 +13,20 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import io.sunstrike.mods.liquidenergy.blocks.BlockGeneratorEU;
+import io.sunstrike.mods.liquidenergy.blocks.BlockLiquifierEU;
+import io.sunstrike.mods.liquidenergy.blocks.tiles.TileGeneratorEU;
+import io.sunstrike.mods.liquidenergy.blocks.tiles.TileLiquifierEU;
+import io.sunstrike.mods.liquidenergy.configuration.Settings;
+import io.sunstrike.mods.liquidenergy.items.ItemLiquidNavitas;
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
+
+import java.util.logging.Logger;
 
 @Mod(modid="LiquidEnergy", name="Liquid Energy", version="0.0.1", dependencies="after:IC2;after:BuildCraft|Core")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false)
@@ -47,7 +46,7 @@ public class LiquidEnergy {
 	public static Item itemLiquidNavitas;
 	
 	// LOGGERS
-	public static Logger logger = Logger.getLogger("LiquidEnergy");
+	public static final Logger logger = Logger.getLogger("LiquidEnergy");
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event) {
