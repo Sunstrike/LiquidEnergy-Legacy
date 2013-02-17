@@ -14,8 +14,13 @@
     AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#`io.sunstrike.mods.liquidenergy.external`
+LiquidEnergy includes certain utility classes from other mods. A list is provided below along with license-mandated links and information.
+
+* buildcraft.core.render.TextureLiquidsFX - From [BuildCraft](http://www.mod-buildcraft.com)[(GitHub)](https://github.com/BuildCraft/BuildCraft). Sources are unmodified save for the package clause, as such the whole mod shouldn't require licensing under MMPLv1 (if this is incorrect, please report it to the maintainer at <[sunstrike@azurenode.net](mailto:sunstrike@azurenode.net)> immediately).
+
 # BuildCraft API
-LiquidEnergy includes the Buildcraft API, which is licensed under the MMPL v1 - Sources are available at [SirSengirs GitHub](https://github.com/SirSengir/BuildCraft) and the mods site is at [mod-buildcraft.com](http://www.mod-buildcraft.com). LiquidEnergy uses the buildcraft.api.* package.
+LiquidEnergy includes the Buildcraft API, which is licensed under the MMPL v1 - Sources are available on [GitHub](https://github.com/BuildCraft/BuildCraft) and the mods site is at [mod-buildcraft.com](http://www.mod-buildcraft.com). LiquidEnergy uses the buildcraft.api.* package.
 
 # IC2 API
 While I could not find a 'license' as such, this mod will fully comply with the terms set out on the [IC2 Forums](http://forum.industrial-craft.net/index.php?page=Thread&threadID=344). This mod is not solely basing off of IC2, so will not necessarily be hosted on Industrial-Craft servers. So far there is no forum thread for this, however there will be one as necessary on the IC forums when completed.

@@ -8,7 +8,7 @@ Converting energy (EU/MJ) to a Forge liquid and back again.
 ##License
 This mod itself is licensed under the MIT License (See `LICENSE.md`).
 
-It includes the Buildcraft API and IC2 API. More details are available in `LICENSE.md`
+It includes the Buildcraft API and IC2 API, along with some external classes. More details are available in `LICENSE.md`
 
 ##Building
 Simply call `ant` in the build directory to build.
