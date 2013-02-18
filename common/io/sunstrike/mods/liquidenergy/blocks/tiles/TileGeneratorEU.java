@@ -6,6 +6,7 @@ import ic2.api.energy.event.EnergyTileSourceEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergySource;
 import io.sunstrike.mods.liquidenergy.LiquidEnergy;
+import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import io.sunstrike.mods.liquidenergy.configuration.Settings;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -175,7 +176,7 @@ public class TileGeneratorEU extends TileEntity implements IEnergySource, ITankC
 		// inputBuffer
 		if (nbt.hasKey("tankLevel")) {
 			int tankLevel = nbt.getInteger("tankLevel");
-			inputBuffer.setLiquid(new LiquidStack(LiquidEnergy.itemLiquidNavitas, tankLevel));
+			inputBuffer.setLiquid(new LiquidStack(ModObjects.itemLiquidNavitas, tankLevel));
 		}
 		
 		// powerBuffer

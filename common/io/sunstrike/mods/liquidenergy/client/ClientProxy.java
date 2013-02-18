@@ -1,10 +1,10 @@
 package io.sunstrike.mods.liquidenergy.client;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import io.sunstrike.mods.liquidenergy.CommonProxy;
+import io.sunstrike.mods.liquidenergy.external.buildcraft.core.render.TextureLiquidsFX;
 import net.minecraft.client.renderer.RenderEngine;
 import net.minecraftforge.client.MinecraftForgeClient;
-import cpw.mods.fml.client.FMLClientHandler;
-import io.sunstrike.mods.liquidenergy.external.buildcraft.core.render.TextureLiquidsFX;
 
 /**
  * ClientProxy

@@ -14,19 +14,25 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 import io.sunstrike.mods.liquidenergy.blocks.BlockGeneratorEU;
+import io.sunstrike.mods.liquidenergy.blocks.BlockGeneratorMJ;
 import io.sunstrike.mods.liquidenergy.blocks.BlockLiquifierEU;
+import io.sunstrike.mods.liquidenergy.blocks.BlockLiquifierMJ;
 import io.sunstrike.mods.liquidenergy.blocks.tiles.TileGeneratorEU;
+import io.sunstrike.mods.liquidenergy.blocks.tiles.TileGeneratorMJ;
 import io.sunstrike.mods.liquidenergy.blocks.tiles.TileLiquifierEU;
+import io.sunstrike.mods.liquidenergy.blocks.tiles.TileLiquifierMJ;
+import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import io.sunstrike.mods.liquidenergy.configuration.Settings;
 import io.sunstrike.mods.liquidenergy.items.ItemLiquidNavitas;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.logging.Logger;
+
+//import io.sunstrike.mods.liquidenergy.blocks.tiles.TileGeneratorMJ;
 
 /**
  * LiquidEnergy
@@ -34,7 +40,7 @@ import java.util.logging.Logger;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
-@Mod(modid="LiquidEnergy", name="Liquid Energy", version="0.0.1", dependencies="after:IC2;after:BuildCraft|Core")
+@Mod(modid="LiquidEnergy", name="Liquid Energy", version="0.0.1", dependencies="after:IC2;after:BuildCraft|Energy")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false)
 public class LiquidEnergy {
 
@@ -44,14 +50,7 @@ public class LiquidEnergy {
 	@SidedProxy(clientSide="io.sunstrike.mods.liquidenergy.client.ClientProxy", serverSide="io.sunstrike.mods.liquidenergy.CommonProxy")
 	public static CommonProxy proxy;
 
-	// BLOCKS
-	public static Block liquifierEU;
-	public static Block liquifierMJ;
-	public static Block generatorEU;
-	public static Block generatorMJ;
-	public static Item itemLiquidNavitas;
-	
-	// LOGGERS
+    // LOGGERS
 	public static final Logger logger = Logger.getLogger("LiquidEnergy");
 
 	@PreInit
@@ -60,14 +59,7 @@ public class LiquidEnergy {
 		logger.setParent(FMLLog.getLogger());
 		
 		// Config
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-		config.load();
-		Settings.blockLiquifyEU = config.getBlock("BlockLiquifyEU", 1460).getInt();
-		Settings.blockLiquifyMJ = config.getBlock("BlockLiquifyMJ", 1461).getInt();
-		Settings.blockGeneratorEU = config.getBlock("BlockGeneratorEU", 1462).getInt();
-		Settings.blockGeneratorMJ = config.getBlock("BlockGeneratorMJ", 1463).getInt();
-		Settings.itemLiquidNavitas = config.getItem("LiquidNavitas", 1464).getInt();
-		config.save();
+        Settings.doConfig(new Configuration(event.getSuggestedConfigurationFile()));
 	}
 
 	@Init
@@ -75,51 +67,83 @@ public class LiquidEnergy {
 		proxy.registerRenderers();
 		
 		// General (Navitas registration)
-		itemLiquidNavitas = new ItemLiquidNavitas(Settings.itemLiquidNavitas)
+		ModObjects.itemLiquidNavitas = new ItemLiquidNavitas(Settings.itemLiquidNavitas)
 			.setItemName("itemLiquidNavitas")
 			.setCreativeTab(CreativeTabs.tabRedstone);
-		GameRegistry.registerItem(itemLiquidNavitas, "itemLiquidNavitas");
-		LanguageRegistry.addName(itemLiquidNavitas, "Navitas");
+		GameRegistry.registerItem(ModObjects.itemLiquidNavitas, "itemLiquidNavitas");
+		LanguageRegistry.addName(ModObjects.itemLiquidNavitas, "Navitas");
 		
-		// Boolean for no-mod catch
-		boolean modsAvailable = false;
-		
-		// IC2
-		try {
-			Class ic2 = Class.forName("ic2.core.IC2");
-			if (ic2 == null) { throw new Exception(); }
-			// Assume we have IC2
-			GameRegistry.registerTileEntity(TileLiquifierEU.class, "TileLiquifierEU");
-			liquifierEU = new BlockLiquifierEU(Settings.blockLiquifyEU, 0, Material.anvil)
-				.setStepSound(Block.soundWoodFootstep)
-				.setBlockName("blockLiquifyEU")
-				.setCreativeTab(CreativeTabs.tabRedstone);
-			GameRegistry.registerBlock(liquifierEU, "blockLiquifyEU");
-			LanguageRegistry.addName(liquifierEU, "EU Liquifier");
-			MinecraftForge.setBlockHarvestLevel(liquifierEU, "pickaxe", 0);
-			
-			GameRegistry.registerTileEntity(TileGeneratorEU.class, "TileGeneratorEU");
-			generatorEU = new BlockGeneratorEU(Settings.blockGeneratorEU, 1, Material.anvil)
-				.setHardness(1.0F)
-				.setStepSound(Block.soundWoodFootstep)
-				.setBlockName("BlockGeneratorEU")
-				.setCreativeTab(CreativeTabs.tabRedstone);
-			GameRegistry.registerBlock(generatorEU, "BlockGeneratorEU");
-			LanguageRegistry.addName(generatorEU, "EU Generator");
-			MinecraftForge.setBlockHarvestLevel(generatorEU, "pickaxe", 0);
-			
-			logger.info("Loaded IC2 integration. Enabling EU liquifier and generator.");
-			modsAvailable = true;
-		} catch (Exception e) {
-			logger.warning("Could not find IC2! Disabling EU liquifier and generator (" + e.toString() + ")");
-		}
-		
-		// BuildCraft
-		// TODO: ALL the buildcraft things
+		// Booleans for no-mod catch
+		boolean ic2 = checkIC2();
+        boolean bc = checkBCEnergy();
 		
 		// Catch lack of ANY power mods
-		if (!modsAvailable) throw new RuntimeException("Must have Buildcraft and/or IC2 installed!");
+		if (!(ic2 || bc)) throw new RuntimeException("Must have Buildcraft and/or IC2 installed!");
 	}
+
+    private boolean checkIC2() {
+        try {
+            Class ic2 = Class.forName("ic2.core.IC2");
+            if (ic2 == null) { throw new Exception(); }
+            // Assume we have IC2
+            GameRegistry.registerTileEntity(TileLiquifierEU.class, "TileLiquifierEU");
+            ModObjects.liquifierEU = new BlockLiquifierEU(Settings.blockLiquifyEU, 0, Material.anvil)
+                    .setStepSound(Block.soundWoodFootstep)
+                    .setBlockName("blockLiquifyEU")
+                    .setCreativeTab(CreativeTabs.tabRedstone);
+            GameRegistry.registerBlock(ModObjects.liquifierEU, "blockLiquifyEU");
+            LanguageRegistry.addName(ModObjects.liquifierEU, "EU Liquifier");
+            MinecraftForge.setBlockHarvestLevel(ModObjects.liquifierEU, "pickaxe", 0);
+
+            GameRegistry.registerTileEntity(TileGeneratorEU.class, "TileGeneratorEU");
+            ModObjects.generatorEU = new BlockGeneratorEU(Settings.blockGeneratorEU, 1, Material.anvil)
+                    .setHardness(1.0F)
+                    .setStepSound(Block.soundWoodFootstep)
+                    .setBlockName("blockGeneratorEU")
+                    .setCreativeTab(CreativeTabs.tabRedstone);
+            GameRegistry.registerBlock(ModObjects.generatorEU, "blockGeneratorEU");
+            LanguageRegistry.addName(ModObjects.generatorEU, "EU Generator");
+            MinecraftForge.setBlockHarvestLevel(ModObjects.generatorEU, "pickaxe", 0);
+
+            logger.info("[Integrations: IC2] Loaded integration module. Enabling EU liquifier and generator.");
+            return true;
+        } catch (Exception e) {
+            logger.warning("[Integrations: IC2] Could not find IC2 Core! Disabling EU liquifier and generator (" + e.toString() + ")");
+            return false;
+        }
+    }
+
+    private boolean checkBCEnergy() {
+        try {
+            Class bcEnergy = Class.forName("buildcraft.energy.PneumaticPowerProvider");
+            if (bcEnergy == null) { throw new Exception(); }
+            // Assume BC Energy is available
+            GameRegistry.registerTileEntity(TileLiquifierMJ.class, "TileLiquifierMJ");
+            ModObjects.liquifierMJ = new BlockLiquifierMJ(Settings.blockLiquifyMJ, 2, Material.anvil)
+                    .setStepSound(Block.soundWoodFootstep)
+                    .setBlockName("blockLiquifyMJ")
+                    .setCreativeTab(CreativeTabs.tabRedstone);
+            GameRegistry.registerBlock(ModObjects.liquifierMJ, "blockLiquifyMJ");
+            LanguageRegistry.addName(ModObjects.liquifierMJ, "MJ Liquifier");
+            MinecraftForge.setBlockHarvestLevel(ModObjects.liquifierMJ, "pickaxe", 0);
+
+            GameRegistry.registerTileEntity(TileGeneratorMJ.class, "TileGeneratorMJ");
+            ModObjects.generatorMJ = new BlockGeneratorMJ(Settings.blockGeneratorMJ, 3, Material.anvil)
+                    .setHardness(1.0F)
+                    .setStepSound(Block.soundWoodFootstep)
+                    .setBlockName("blockGeneratorMJ")
+                    .setCreativeTab(CreativeTabs.tabRedstone);
+            GameRegistry.registerBlock(ModObjects.generatorMJ, "blockGeneratorMJ");
+            LanguageRegistry.addName(ModObjects.generatorMJ, "MJ Generator");
+            MinecraftForge.setBlockHarvestLevel(ModObjects.generatorMJ, "pickaxe", 0);
+
+            logger.info("[Integrations: BC Energy] Loaded integration module. Enabling MJ liquifier and generator.");
+            return true;
+        } catch (Exception e) {
+            logger.warning("[Integrations: BC Energy] Could not find Buildcraft pneumatic power provider! Disabling MJ liquifier and generator (" + e.toString() + ")");
+            return false;
+        }
+    }
 
 	@PostInit
 	public void postInit(FMLPostInitializationEvent event) {

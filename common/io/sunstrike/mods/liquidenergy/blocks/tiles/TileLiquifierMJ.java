@@ -1,17 +1,11 @@
 package io.sunstrike.mods.liquidenergy.blocks.tiles;
 
-import ic2.api.Direction;
-import ic2.api.energy.event.EnergyTileLoadEvent;
-import ic2.api.energy.event.EnergyTileUnloadEvent;
-import ic2.api.energy.tile.IEnergySink;
 import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
-import io.sunstrike.mods.liquidenergy.configuration.Settings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
@@ -23,30 +17,18 @@ import net.minecraftforge.liquids.LiquidTank;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
-public class TileLiquifierEU extends TileEntity implements IEnergySink, ITankContainer {
-	
+public class TileLiquifierMJ extends TileEntity implements ITankContainer {
+
 	// Internal buffers
 	private final LiquidTank outputBuffer = new LiquidTank(8000);
-	
-	// Used to check we're already on the ENet
-	private boolean hasAddedToENet = false;
-	
-	public TileLiquifierEU() {
+
+	public TileLiquifierMJ() {
 		//LiquidEnergy.logger.info("Created TE Liquifier EU.");
 		outputBuffer.setTankPressure(100);
 	}
-	
+
 	@Override
 	public void updateEntity() {
-		// IC2 initialisation
-		if (!worldObj.isRemote) {
-			if (!hasAddedToENet) {
-				LiquidEnergy.logger.info("Registering entity at " + this.xCoord + ", " + yCoord + ", " + zCoord + " with IC2 ENet.");
-				MinecraftForge.EVENT_BUS.post(new EnergyTileLoadEvent(this));
-				hasAddedToENet = true;
-			}
-		}
-		
 		// Dump to pipes/tanks
 		for (ForgeDirection d : new ForgeDirection[]{ForgeDirection.DOWN, ForgeDirection.UP}) {
 			int y;
@@ -55,61 +37,16 @@ public class TileLiquifierEU extends TileEntity implements IEnergySink, ITankCon
 			} else {
 				y = yCoord + 1;
 			}
-			
+
 			TileEntity te = worldObj.getBlockTileEntity(xCoord, y, zCoord);
 			if (te instanceof ITankContainer) {
 				LiquidStack ours = outputBuffer.getLiquid();
 				if (ours != null && ours.amount > 0) {
-					int removed = ((ITankContainer) te).fill(d.getOpposite(), new LiquidStack(ModObjects.itemLiquidNavitas, Settings.euPerNv * 2), true);
+					int removed = ((ITankContainer) te).fill(d.getOpposite(), new LiquidStack(ModObjects.itemLiquidNavitas, 12), true);
 					outputBuffer.drain(removed, true);
 				}
 			}
 		}
-	}
-	
-	// Invalidation/Unload for IC2 ENet
-	@Override
-	public void invalidate() {
-		if (!worldObj.isRemote) {
-			LiquidEnergy.logger.info("Deregistering entity at " + this.xCoord + ", " + yCoord + ", " + zCoord + " with IC2 ENet.");
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-		}
-		super.invalidate();
-	}
-	
-	@Override
-	public void onChunkUnload() {
-		if (!worldObj.isRemote) {
-			LiquidEnergy.logger.info("Deregistering entity at " + this.xCoord + ", " + yCoord + ", " + zCoord + " with IC2 ENet.");
-			MinecraftForge.EVENT_BUS.post(new EnergyTileUnloadEvent(this));
-		}
-		super.onChunkUnload();
-	}
-
-	@Override
-	public boolean isAddedToEnergyNet() {
-		return hasAddedToENet;
-	}
-
-	@Override
-	public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction) {
-		return (direction != Direction.YN && direction != Direction.YP);
-	}
-
-	@Override
-	public int demandsEnergy() {
-		// This would be a "tier 1" converter (LV) (1Nav/8EU)
-		return outputBuffer.fill(new LiquidStack(ModObjects.itemLiquidNavitas, 32/Settings.euPerNv), false) * Settings.euPerNv;
-	}
-
-	@Override
-	public int injectEnergy(Direction directionFrom, int amount) {
-		return amount/Settings.euPerNv - outputBuffer.fill(new LiquidStack(ModObjects.itemLiquidNavitas, amount/Settings.euPerNv), true);
-	}
-
-	@Override
-	public int getMaxSafeInput() {
-		return 32;
 	}
 
 	@Override
@@ -149,21 +86,15 @@ public class TileLiquifierEU extends TileEntity implements IEnergySink, ITankCon
 	}
 
 	public void sendDebugToPlayer(EntityPlayer player) {
-		player.addChatMessage("[TileLiquifierEU] On ENet: " + hasAddedToENet);
-		LiquidStack li = outputBuffer.getLiquid();
-		if (li == null) {
-			player.addChatMessage("[TileLiquifierEU] Output buffer: 0/8000");
-		} else {
-			player.addChatMessage("[TileLiquifierEU] Output buffer: " + li.amount + "/8000");
-		}
+		// TODO: Debug info
 	}
-	
+
 	// Read/Write NBT overrides for buffer
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		int tankLevel = 0;
-		
-		LiquidStack li = outputBuffer.getLiquid();
+
+		net.minecraftforge.liquids.LiquidStack li = outputBuffer.getLiquid();
 		if (li != null) tankLevel = li.amount;
 		nbt.setInteger("tankLevel", tankLevel);
 
@@ -178,7 +109,7 @@ public class TileLiquifierEU extends TileEntity implements IEnergySink, ITankCon
 		}
 
 		super.readFromNBT(nbt);
-		LiquidEnergy.logger.info("[EULiq] Restored TE state for " + xCoord + ", " + yCoord + ", " + zCoord);
+		LiquidEnergy.logger.info("[MJLiq] Restored TE state for " + xCoord + ", " + yCoord + ", " + zCoord);
 	}
 
 }

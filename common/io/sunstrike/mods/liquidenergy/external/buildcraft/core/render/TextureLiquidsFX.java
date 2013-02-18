@@ -9,9 +9,9 @@
 
 package io.sunstrike.mods.liquidenergy.external.buildcraft.core.render;
 
+import cpw.mods.fml.client.FMLTextureFX;
 import net.minecraft.client.renderer.RenderEngine;
 import net.minecraftforge.client.ForgeHooksClient;
-import cpw.mods.fml.client.FMLTextureFX;
 
 public class TextureLiquidsFX extends FMLTextureFX {
 
