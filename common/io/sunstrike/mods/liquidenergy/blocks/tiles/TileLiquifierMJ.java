@@ -171,6 +171,8 @@ public class TileLiquifierMJ extends TileEntity implements ITankContainer, IPowe
 		if (li != null) tankLevel = li.amount;
 		nbt.setInteger("tankLevel", tankLevel);
 
+        powerProvider.writeToNBT(nbt);
+
 		super.writeToNBT(nbt);
 	}
 
@@ -180,6 +182,8 @@ public class TileLiquifierMJ extends TileEntity implements ITankContainer, IPowe
 			int tankLevel = nbt.getInteger("tankLevel");
 			outputBuffer.setLiquid(new LiquidStack(ModObjects.itemLiquidNavitas, tankLevel));
 		}
+
+        powerProvider.readFromNBT(nbt);
 
 		super.readFromNBT(nbt);
 		LiquidEnergy.logger.info("[MJLiq] Restored TE state for " + xCoord + ", " + yCoord + ", " + zCoord);
