@@ -86,8 +86,7 @@ public class LiquidEnergy {
 		
 		// General (Navitas registration)
 		ModObjects.itemLiquidNavitas = new ItemLiquidNavitas(Settings.itemLiquidNavitas)
-			.setItemName("itemLiquidNavitas")
-			.setCreativeTab(CreativeTabs.tabRedstone);
+			.setItemName("itemLiquidNavitas");
 		GameRegistry.registerItem(ModObjects.itemLiquidNavitas, "itemLiquidNavitas");
 		LanguageRegistry.addName(ModObjects.itemLiquidNavitas, "Navitas");
 		
