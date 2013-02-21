@@ -24,7 +24,10 @@
 
 	<condition property="out-of-date">
 		<not>
-			<available file="${download.dir}/${forge.name}"/>
+			<and>
+                <available file="${download.dir}/${forge.name}"/>
+                <available file="${mcpsrc.dir}"/>
+            </and>
 		</not>
 	</condition>
 
