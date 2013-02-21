@@ -29,10 +29,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
+import ic2.api.Items;
 
 import java.util.logging.Logger;
-
-//import io.sunstrike.mods.liquidenergy.blocks.tiles.TileGeneratorMJ;
 
 /**
  * LiquidEnergy
@@ -108,6 +107,14 @@ public class LiquidEnergy {
             Class ic2 = Class.forName("ic2.core.IC2");
             if (ic2 == null) { throw new Exception(); }
             // Assume we have IC2
+            // Materials for crafting recipes
+            ItemStack piston = new ItemStack(Block.pistonBase);
+            ItemStack glass = new ItemStack(Block.thinGlass);
+            ItemStack fiberCable = Items.getItem("glassFiberCableItem");
+            ItemStack batbox = Items.getItem("batBox");
+            ItemStack lvTransformer = Items.getItem("lvTransformer");
+
+            // Register blocks and recipes
             GameRegistry.registerTileEntity(TileLiquifierEU.class, "TileLiquifierEU");
             ModObjects.liquifierEU = new BlockLiquifierEU(Settings.blockLiquifyEU, 0, Material.anvil)
                     .setStepSound(Block.soundWoodFootstep)
@@ -116,6 +123,15 @@ public class LiquidEnergy {
             GameRegistry.registerBlock(ModObjects.liquifierEU, "blockLiquifyEU");
             LanguageRegistry.addName(ModObjects.liquifierEU, "EU Liquifier");
             MinecraftForge.setBlockHarvestLevel(ModObjects.liquifierEU, "pickaxe", 0);
+            /*
+             * EU Liquifier:
+             *
+             * [P][B][P]
+             * [C][L][C]
+             * [G][G][G]
+             */
+            GameRegistry.addRecipe(new ItemStack(ModObjects.liquifierEU), "pbp", "clc", "ggg",
+                    'p', piston, 'b', batbox, 'c', fiberCable, 'l', lvTransformer, 'g', glass);
 
             GameRegistry.registerTileEntity(TileGeneratorEU.class, "TileGeneratorEU");
             ModObjects.generatorEU = new BlockGeneratorEU(Settings.blockGeneratorEU, 1, Material.anvil)
@@ -126,10 +142,20 @@ public class LiquidEnergy {
             GameRegistry.registerBlock(ModObjects.generatorEU, "blockGeneratorEU");
             LanguageRegistry.addName(ModObjects.generatorEU, "EU Generator");
             MinecraftForge.setBlockHarvestLevel(ModObjects.generatorEU, "pickaxe", 0);
+            /*
+             * EU Generator:
+             *
+             * [P][L][P]
+             * [C][B][C]
+             * [G][G][G]
+             */
+            GameRegistry.addRecipe(new ItemStack(ModObjects.generatorEU), "plp", "cbc", "ggg",
+                    'p', piston, 'b', batbox, 'c', fiberCable, 'l', lvTransformer, 'g', glass);
 
             logger.info("[Integrations: IC2] Loaded integration module. Enabling EU liquifier and generator.");
             return true;
         } catch (Exception e) {
+            // TODO: make this error catch a bit more precise; send anything that -isn't- a ClassNotFound to Sentry.
             logger.warning("[Integrations: IC2] Could not find IC2 Core! Disabling EU liquifier and generator (" + e.toString() + ")");
             return false;
         }
@@ -193,6 +219,7 @@ public class LiquidEnergy {
             logger.info("[Integrations: BC Energy] Loaded integration module. Enabling MJ liquifier and generator.");
             return true;
         } catch (Exception e) {
+            // TODO: make this error catch a bit more precise; send anything that -isn't- a ClassNotFound to Sentry.
             logger.warning("[Integrations: BC Energy] Could not find Buildcraft! Disabling MJ liquifier and generator (" + e.toString() + ")");
             return false;
         }
