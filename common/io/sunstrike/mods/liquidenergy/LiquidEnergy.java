@@ -4,11 +4,9 @@ import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -27,6 +25,8 @@ import io.sunstrike.mods.liquidenergy.items.ItemLiquidNavitas;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -58,7 +58,7 @@ import java.util.logging.Logger;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
-@Mod(modid="LiquidEnergy", name="Liquid Energy", version="0.0.1", dependencies="after:IC2;after:BuildCraft|Energy")
+@Mod(modid="LiquidEnergy", name="Liquid Energy", version="0.0.1", dependencies="after:IC2;after:BuildCraft|*")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false)
 public class LiquidEnergy {
 
@@ -98,6 +98,11 @@ public class LiquidEnergy {
 		if (!(ic2 || bc)) throw new RuntimeException("Must have Buildcraft and/or IC2 installed!");
 	}
 
+    /**
+     * Private helper for checking for IC2, then registering blocks if possible.
+     *
+     * @return true for found, false for not found/failed
+     */
     private boolean checkIC2() {
         try {
             Class ic2 = Class.forName("ic2.core.IC2");
@@ -130,11 +135,26 @@ public class LiquidEnergy {
         }
     }
 
+    /**
+     * Private helper for checking for BC, then registering blocks if possible.
+     *
+     * @return true for found, false for not found/failed
+     */
     private boolean checkBCEnergy() {
         try {
             Class bcEnergy = Class.forName("buildcraft.energy.PneumaticPowerProvider");
             if (bcEnergy == null) { throw new Exception(); }
             // Assume BC Energy is available
+            // Materials for crafting recipes
+            Class bcCore = Class.forName("buildcraft.BuildCraftCore");
+            Class bcFactory = Class.forName("buildcraft.BuildCraftFactory");
+            ItemStack goldGear = new ItemStack((Item)getReflectedItem(bcCore, "goldGearItem"));
+            ItemStack bcTank = new ItemStack((Block)getReflectedItem(bcFactory, "tankBlock"));
+            ItemStack piston = new ItemStack(Block.pistonBase);
+            ItemStack diamond = new ItemStack(Item.diamond);
+            ItemStack redstone = new ItemStack(Item.redstone);
+
+            // Register blocks and recipes
             GameRegistry.registerTileEntity(TileLiquifierMJ.class, "TileLiquifierMJ");
             ModObjects.liquifierMJ = new BlockLiquifierMJ(Settings.blockLiquifyMJ, 2, Material.anvil)
                     .setStepSound(Block.soundWoodFootstep)
@@ -143,6 +163,14 @@ public class LiquidEnergy {
             GameRegistry.registerBlock(ModObjects.liquifierMJ, "blockLiquifyMJ");
             LanguageRegistry.addName(ModObjects.liquifierMJ, "MJ Liquifier");
             MinecraftForge.setBlockHarvestLevel(ModObjects.liquifierMJ, "pickaxe", 0);
+            /*
+             * MJ Liquifier:
+             * [ ][T][ ]
+             * [G][D][G]
+             * [P][R][P]
+             */
+            GameRegistry.addRecipe(new ItemStack(ModObjects.liquifierMJ), " t ", "gdg", "prp",
+                    't', bcTank, 'g', goldGear, 'd', diamond, 'p', piston, 'r', redstone);
 
             GameRegistry.registerTileEntity(TileGeneratorMJ.class, "TileGeneratorMJ");
             ModObjects.generatorMJ = new BlockGeneratorMJ(Settings.blockGeneratorMJ, 3, Material.anvil)
@@ -153,18 +181,37 @@ public class LiquidEnergy {
             GameRegistry.registerBlock(ModObjects.generatorMJ, "blockGeneratorMJ");
             LanguageRegistry.addName(ModObjects.generatorMJ, "MJ Generator");
             MinecraftForge.setBlockHarvestLevel(ModObjects.generatorMJ, "pickaxe", 0);
+            /*
+             * MJ Generator:
+             * [ ][P][ ]
+             * [G][D][G]
+             * [T][R][T]
+             */
+            GameRegistry.addRecipe(new ItemStack(ModObjects.generatorMJ), " p ", "gdg", "trt",
+                    't', bcTank, 'g', goldGear, 'd', diamond, 'p', piston, 'r', redstone);
 
             logger.info("[Integrations: BC Energy] Loaded integration module. Enabling MJ liquifier and generator.");
             return true;
         } catch (Exception e) {
-            logger.warning("[Integrations: BC Energy] Could not find Buildcraft pneumatic power provider! Disabling MJ liquifier and generator (" + e.toString() + ")");
+            logger.warning("[Integrations: BC Energy] Could not find Buildcraft! Disabling MJ liquifier and generator (" + e.toString() + ")");
             return false;
         }
     }
 
-	@PostInit
-	public void postInit(FMLPostInitializationEvent event) {
-		// Stub Method
-	}
+    /**
+     * Helper method to get items/blocks through reflection
+     *
+     * @param cl Class to search in
+     * @param fieldName Name of the field where the item/block is stored
+     * @return The object if found (cast it) or null.
+     */
+    private Object getReflectedItem(Class cl, String fieldName) {
+        try {
+            return cl.getDeclaredField(fieldName).get(null);
+        } catch (Exception e) {
+            logger.warning("Failed in getReflectedItem: " + e.getMessage());
+            return null;
+        }
+    }
 
 }
