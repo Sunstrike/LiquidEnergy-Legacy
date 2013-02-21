@@ -16,7 +16,7 @@
 
 	<property name="mc.version"          value="1.4.7"/>
 	<property name="forge.version"       value="6.6.1.524"/>
-	<property name="le.version"          value="0.0.1-ALPHA"/>
+	<property name="le.version"          value="0.0.1"/>
 	
 	<property name="forge.name"          value="minecraftforge-src-${mc.version}-${forge.version}.zip"/>
 
@@ -43,9 +43,11 @@
 	<!-- Set full version -->
 	<target name="initialize-version">
         <exec executable="git" outputproperty="build.number">
-            <arg value="rev-parse --short HEAD" />
+            <arg value="rev-parse" />
+            <arg value="--short" />
+            <arg value="HEAD" />
         </exec>
-		<property name="le.version.full" value="${le.version}.${build.number}"/>
+		<property name="le.version.full" value="${le.version}-${build.number}"/>
 		<echo message="Starting build for ${le.version.full}"/>
 	</target>
 
