@@ -57,10 +57,8 @@
 	</target>
 
 	<!-- Setup mcp and forge -->
-	<target name="setup" depends="download-files" if="out-of-date">
+	<target name="setup" depends="clean,initialize-version,download-files" if="out-of-date">
 	
-		<delete dir="${build.dir}"/>
-
 		<!-- Unzip them -->
 		<unzip dest="${build.dir}" src="${download.dir}/${forge.name}"/>
 
@@ -122,7 +120,7 @@
 			<arg value="reobfuscate.sh"/>
 		</exec>
 
-		<!-- Copy FT classes -->
+		<!-- Copy LE classes -->
 		<copy todir="${classes.dir}">
 			<fileset dir="${mcp.dir}/reobf/minecraft">
 				<exclude name="/buildcraft"/>
