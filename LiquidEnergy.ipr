@@ -40,6 +40,16 @@
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
+  <component name="IssueNavigationConfiguration">
+    <option name="links">
+      <list>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="#([0-9]+)" />
+          <option name="linkRegexp" value="https://github.com/Sunstrike/LiquidEnergy/issues/$1" />
+        </IssueNavigationLink>
+      </list>
+    </option>
+  </component>
   <component name="Palette2">
     <group name="Swing">
       <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.png" removable="false" auto-create-binding="false" can-attach-label="false">
@@ -201,6 +211,9 @@
       <envs />
       <method />
     </configuration>
+  </component>
+  <component name="TaskProjectConfiguration">
+    <server type="GitHub" url="https://github.com" />
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
