@@ -18,7 +18,7 @@ Feeling lazy, or don't have the JDK+Ant? We have automated development builds on
 ##Developing
 
 ###IntelliJ IDEA 12
-IDEA supports pulling source from multiple folders, so open the IDEA project (`{Repo}/IDEA`) and use Ant to run the `setup` target. This will setup Forge/FML/MCP and import source from the common/ folder. This approach is also safe from the Windows bug in the Eclipse setup.
+IDEA supports pulling source from multiple folders, so open the repo folder as an IDEA project and use Ant to run the `setup` target. This will setup Forge/FML/MCP and import source from the common/ folder. This approach is also safe from the Windows bug in the Eclipse setup.
 
 Run configurations are now stored in the IDEA project file, so shouldn't need to be recreated.
 
