@@ -13,7 +13,7 @@ It includes the Buildcraft API and IC2 API, along with some external classes. Mo
 ##Building
 Simply call `ant` in the build directory to build.
 
-Feeling lazy, or don't have the JDK+Ant? We have automated development builds on our [Bamboo CI](https://bamboo.azurenode.net/browse/LIQEN-PACK/latest/artifact) server. These are built with JDK7, so may only run on Java 7 or above.
+Feeling lazy, or don't have the JDK+Ant? We have automated development builds on our [Bamboo CI](https://bamboo.sunstrike.io/browse/LIQEN-PACK/latest/artifact) server. These are built with JDK7, so may only run on Java 7 or above.
 
 ##Developing
 
