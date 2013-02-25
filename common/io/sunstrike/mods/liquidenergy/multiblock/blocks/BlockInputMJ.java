@@ -1,8 +1,11 @@
-package io.sunstrike.mods.liquidenergy.multiblock;
+package io.sunstrike.mods.liquidenergy.multiblock.blocks;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 
 /**
- * ComponentDescriptor
- * io.sunstrike.mods.liquidenergy.multiblock
+ * BlockInputMJ
+ * io.sunstrike.mods.liquidenergy.multiblock.blocks
  * LiquidEnergy
  *
  * The MIT License (MIT)
@@ -24,18 +27,11 @@ package io.sunstrike.mods.liquidenergy.multiblock;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
-/**
- * Possible parts of a multiblock structure
- */
-public enum ComponentDescriptor {
+public class BlockInputMJ extends Block {
 
-    INTERNAL_TANK,
-    INPUT_POWER_EU,
-    INPUT_POWER_MJ,
-    INPUT_FLUID,
-    OUTPUT_POWER_EU,
-    OUTPUT_POWER_MJ,
-    OUTPUT_FLUID,
-    STRUCTURE;
+    public BlockInputMJ(int id, int tex, Material mat) {
+        super(id, tex, mat);
+        setHardness(5F);
+    }
 
 }

@@ -1,5 +1,6 @@
 package io.sunstrike.mods.liquidenergy.helpers;
 
+import io.sunstrike.mods.liquidenergy.multiblock.blocks.*;
 import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
@@ -34,6 +35,28 @@ import net.minecraft.world.World;
 public class MultiblockDiscoveryHelper {
 
     public static MultiblockDescriptor discoverTransformerStructure(int x, int y, int z, World world, Block caller) {
+        if (caller instanceof BlockComponentTank) {
+            return __discoverTransformerFromTank(x, y, z, world);
+        } else if (caller instanceof BlockInputEU || caller instanceof BlockInputMJ || caller instanceof BlockInputFluid) {
+            return __discoverTransformerFromInput(x, y, z, world);
+        } else if (caller instanceof BlockOutputEU || caller instanceof BlockOutputMJ || caller instanceof BlockOutputFluid) {
+            return __discoverTransformerFromOutput(x, y, z, world);
+        } else {
+            return null;
+        }
+    }
+
+    private static MultiblockDescriptor __discoverTransformerFromOutput(int x, int y, int z, World world) {
+        // TODO: Stub method
+        return null;
+    }
+
+    private static MultiblockDescriptor __discoverTransformerFromInput(int x, int y, int z, World world) {
+        // TODO: Stub method
+        return null;
+    }
+
+    private static MultiblockDescriptor __discoverTransformerFromTank(int x, int y, int z, World world) {
         // TODO: Stub method
         return null;
     }
