@@ -195,6 +195,8 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="LiquidEnergy" />
       <envs />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
     <configuration default="false" name="Server" type="Application" factoryName="Application" singleton="true">
@@ -209,6 +211,8 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="LiquidEnergy" />
       <envs />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
       <method />
     </configuration>
   </component>

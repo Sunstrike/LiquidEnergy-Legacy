@@ -35,6 +35,16 @@ public class ModObjects {
     public static Block generatorEU;
     public static Block generatorMJ;
 
+    // MULTIBLOCK BLOCKS
+    public static Block blockComponentTank;
+    public static Block blockInputEU;
+    public static Block blockInputMJ;
+    public static Block BlockInputFluid;
+    public static Block blockOutputEU;
+    public static Block blockOutputMJ;
+    public static Block blockOutputFluid;
+    public static Block blockStructure;
+
     // ITEMS
     public static Item itemLiquidNavitas;
 

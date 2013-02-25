@@ -35,6 +35,16 @@ public class Settings {
 	public static int blockLiquifyMJ = 1461;
 	public static int blockGeneratorEU = 1462;
 	public static int blockGeneratorMJ = 1463;
+
+    // Multiblock blocks
+    public static int blockComponentTank = 1464;
+    public static int blockInputEU = 1465;
+    public static int blockInputMJ = 1466;
+    public static int BlockInputFluid = 1467;
+    public static int blockOutputEU = 1468;
+    public static int blockOutputMJ = 1469;
+    public static int blockOutputFluid = 1470;
+    public static int blockStructure = 1471;
 	
 	// Items
 	public static int itemLiquidNavitas = 1464;
@@ -51,6 +61,16 @@ public class Settings {
         blockLiquifyMJ = config.getBlock("BlockLiquifyMJ", blockLiquifyMJ).getInt();
         blockGeneratorEU = config.getBlock("BlockGeneratorEU", blockGeneratorEU).getInt();
         blockGeneratorMJ = config.getBlock("BlockGeneratorMJ", blockGeneratorMJ).getInt();
+
+        // Multiblock blocks
+        blockComponentTank = config.getBlock("blockComponentTank", blockComponentTank).getInt();
+        blockInputEU = config.getBlock("blockInputEU", blockInputEU).getInt();
+        blockInputMJ = config.getBlock("blockInputMJ", blockInputMJ).getInt();
+        BlockInputFluid = config.getBlock("BlockInputFluid", BlockInputFluid).getInt();
+        blockOutputEU = config.getBlock("blockOutputEU", blockOutputEU).getInt();
+        blockOutputMJ = config.getBlock("blockOutputMJ", blockOutputMJ).getInt();
+        blockOutputFluid = config.getBlock("blockOutputFluid", blockOutputFluid).getInt();
+        blockStructure = config.getBlock("blockStructure", blockStructure).getInt();
 
         // Items
         itemLiquidNavitas = config.getItem("LiquidNavitas", itemLiquidNavitas).getInt();
