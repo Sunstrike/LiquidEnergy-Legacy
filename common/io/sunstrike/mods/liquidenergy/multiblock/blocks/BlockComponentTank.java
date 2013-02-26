@@ -27,6 +27,11 @@ import net.minecraft.block.material.Material;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Multiblock component: Tank
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class BlockComponentTank extends Block {
 
     public BlockComponentTank(int id, int tex, Material mat) {

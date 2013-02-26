@@ -27,6 +27,11 @@ import net.minecraft.block.material.Material;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Multiblock component: MJ output
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class BlockOutputMJ extends Block {
 
     public BlockOutputMJ(int id, int tex, Material mat) {

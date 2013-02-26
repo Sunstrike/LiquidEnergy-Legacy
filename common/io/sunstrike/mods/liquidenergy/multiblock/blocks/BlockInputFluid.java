@@ -27,6 +27,11 @@ import net.minecraft.block.material.Material;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Multiblock component: Fluid input
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class BlockInputFluid extends Block {
 
     public BlockInputFluid(int id, int tex, Material mat) {

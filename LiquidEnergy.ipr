@@ -34,6 +34,7 @@
     <module2copyright />
   </component>
   <component name="DependencyValidationManager">
+    <scope name="io.sunstrike" pattern="src:io.sunstrike..*" />
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />

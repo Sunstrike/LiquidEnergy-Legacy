@@ -27,6 +27,11 @@ import net.minecraft.block.material.Material;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Multiblock component: EU Input
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class BlockInputEU extends Block {
 
     public BlockInputEU(int id, int tex, Material mat) {

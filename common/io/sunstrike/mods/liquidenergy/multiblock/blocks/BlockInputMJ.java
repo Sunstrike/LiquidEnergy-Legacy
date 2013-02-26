@@ -27,6 +27,11 @@ import net.minecraft.block.material.Material;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Multiblock component: MJ input
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class BlockInputMJ extends Block {
 
     public BlockInputMJ(int id, int tex, Material mat) {

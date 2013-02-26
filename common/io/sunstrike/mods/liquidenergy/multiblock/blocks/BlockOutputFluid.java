@@ -27,6 +27,11 @@ import net.minecraft.block.material.Material;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Multiblock component: Fluid output
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class BlockOutputFluid extends Block {
 
     public BlockOutputFluid(int id, int tex, Material mat) {

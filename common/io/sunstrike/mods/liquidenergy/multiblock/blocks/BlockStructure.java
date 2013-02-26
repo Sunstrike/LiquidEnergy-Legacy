@@ -27,6 +27,11 @@ import net.minecraft.block.material.Material;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Multiblock component: Structure
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class BlockStructure extends Block {
 
     public BlockStructure(int id, int tex, Material mat) {
