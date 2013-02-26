@@ -1,6 +1,6 @@
 package io.sunstrike.mods.liquidenergy.multiblock;
 
-/**
+/*
  * StructureType
  * io.sunstrike.mods.liquidenergy.multiblock
  * LiquidEnergy

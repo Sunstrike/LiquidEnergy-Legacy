@@ -3,7 +3,7 @@ package io.sunstrike.mods.liquidenergy.configuration;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
-/**
+/*
  * ModObjects
  * io.sunstrike.mods.liquidenergy.configuration
  * LiquidEnergy

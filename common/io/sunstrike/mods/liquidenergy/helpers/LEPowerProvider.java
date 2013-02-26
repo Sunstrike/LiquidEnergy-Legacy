@@ -3,7 +3,7 @@ package io.sunstrike.mods.liquidenergy.helpers;
 import buildcraft.api.power.PowerProvider;
 import net.minecraftforge.common.ForgeDirection;
 
-/**
+/*
  * LEPowerProvider
  * io.sunstrike.mods.liquidenergy.helpers
  * LiquidEnergy

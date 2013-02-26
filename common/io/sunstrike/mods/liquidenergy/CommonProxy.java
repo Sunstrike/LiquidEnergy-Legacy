@@ -1,6 +1,6 @@
 package io.sunstrike.mods.liquidenergy;
 
-/**
+/*
  * CommonProxy
  * io.sunstrike.mods.liquidenergy
  * LiquidEnergy

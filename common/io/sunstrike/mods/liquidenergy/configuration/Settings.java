@@ -2,7 +2,7 @@ package io.sunstrike.mods.liquidenergy.configuration;
 
 import net.minecraftforge.common.Configuration;
 
-/**
+/*
  * Settings
  * io.sunstrike.mods.liquidenergy.configuration
  * LiquidEnergy

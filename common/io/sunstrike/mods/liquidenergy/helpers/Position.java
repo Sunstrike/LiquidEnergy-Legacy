@@ -2,7 +2,7 @@ package io.sunstrike.mods.liquidenergy.helpers;
 
 import net.minecraft.world.World;
 
-/**
+/*
  * Position
  * io.sunstrike.mods.liquidenergy.helpers
  * LiquidEnergy

@@ -2,7 +2,6 @@ package io.sunstrike.mods.liquidenergy.helpers;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import ic2.api.Items;
 import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.blocks.BlockGeneratorEU;
 import io.sunstrike.mods.liquidenergy.blocks.BlockGeneratorMJ;
@@ -18,11 +17,10 @@ import io.sunstrike.mods.liquidenergy.items.ItemLiquidNavitas;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 
-/**
+/*
  * ForgeRegistrations
  * io.sunstrike.mods.liquidenergy.helpers
  * LiquidEnergy
@@ -81,15 +79,10 @@ public class ForgeRegistrations {
      */
     private static boolean checkIC2() {
         try {
+            ModRecipes.setupIC2Recipes();
+
             Class ic2 = Class.forName("ic2.core.IC2");
-            if (ic2 == null) { throw new Exception(); }
-            // Assume we have IC2
-            // Materials for crafting recipes
-            ItemStack piston = new ItemStack(Block.pistonBase);
-            ItemStack glass = new ItemStack(Block.thinGlass);
-            ItemStack fiberCable = Items.getItem("glassFiberCableItem");
-            ItemStack batbox = Items.getItem("batBox");
-            ItemStack lvTransformer = Items.getItem("lvTransformer");
+            if (ic2 == null) throw new ClassNotFoundException();
 
             // Register blocks and recipes
             GameRegistry.registerTileEntity(TileLiquifierEU.class, "TileLiquifierEU");
@@ -97,18 +90,7 @@ public class ForgeRegistrations {
                     .setStepSound(Block.soundWoodFootstep)
                     .setBlockName("blockLiquifyEU")
                     .setCreativeTab(CreativeTabs.tabRedstone);
-            GameRegistry.registerBlock(ModObjects.liquifierEU, "blockLiquifyEU");
-            LanguageRegistry.addName(ModObjects.liquifierEU, "EU Liquifier");
-            MinecraftForge.setBlockHarvestLevel(ModObjects.liquifierEU, "pickaxe", 0);
-            /*
-             * EU Liquifier:
-             *
-             * [P][B][P]
-             * [C][L][C]
-             * [G][G][G]
-             */
-            GameRegistry.addRecipe(new ItemStack(ModObjects.liquifierEU), "pbp", "clc", "ggg",
-                    'p', piston, 'b', batbox, 'c', fiberCable, 'l', lvTransformer, 'g', glass);
+            registerBlock(ModObjects.liquifierEU, "blockLiquifyEU", "EU Liquifier", ModRecipes.blockLiquifierEU);
 
             GameRegistry.registerTileEntity(TileGeneratorEU.class, "TileGeneratorEU");
             ModObjects.generatorEU = new BlockGeneratorEU(Settings.blockGeneratorEU, 1, Material.anvil)
@@ -116,24 +98,15 @@ public class ForgeRegistrations {
                     .setStepSound(Block.soundWoodFootstep)
                     .setBlockName("blockGeneratorEU")
                     .setCreativeTab(CreativeTabs.tabRedstone);
-            GameRegistry.registerBlock(ModObjects.generatorEU, "blockGeneratorEU");
-            LanguageRegistry.addName(ModObjects.generatorEU, "EU Generator");
-            MinecraftForge.setBlockHarvestLevel(ModObjects.generatorEU, "pickaxe", 0);
-            /*
-             * EU Generator:
-             *
-             * [P][L][P]
-             * [C][B][C]
-             * [G][G][G]
-             */
-            GameRegistry.addRecipe(new ItemStack(ModObjects.generatorEU), "plp", "cbc", "ggg",
-                    'p', piston, 'b', batbox, 'c', fiberCable, 'l', lvTransformer, 'g', glass);
+            registerBlock(ModObjects.generatorEU, "blockGeneratorEU", "EU Generator", ModRecipes.blockGeneratorEU);
 
             LiquidEnergy.logger.info("[Integrations: IC2] Loaded integration module. Enabling EU liquifier and generator.");
             return true;
-        } catch (Exception e) {
-            // TODO: make this error catch a bit more precise; send anything that -isn't- a ClassNotFound to Sentry.
-            LiquidEnergy.logger.warning("[Integrations: IC2] Could not find IC2 Core! Disabling EU liquifier and generator (" + e.toString() + ")");
+        } catch (NullPointerException e) {
+            LiquidEnergy.logger.warning("[Integrations: IC2] Could not find IC2 Core! Disabling EU liquifier and generator (NullPointerException)");
+            return false;
+        } catch (ClassNotFoundException e) {
+            LiquidEnergy.logger.warning("[Integrations: IC2] Could not find IC2 Core! Disabling EU liquifier and generator (ClassNotFoundException)");
             return false;
         }
     }
@@ -145,17 +118,7 @@ public class ForgeRegistrations {
      */
     private static boolean checkBCEnergy() {
         try {
-            Class bcEnergy = Class.forName("buildcraft.energy.PneumaticPowerProvider");
-            if (bcEnergy == null) { throw new Exception(); }
-            // Assume BC Energy is available
-            // Materials for crafting recipes
-            Class bcCore = Class.forName("buildcraft.BuildCraftCore");
-            Class bcFactory = Class.forName("buildcraft.BuildCraftFactory");
-            ItemStack goldGear = new ItemStack((Item)getReflectedItem(bcCore, "goldGearItem"));
-            ItemStack bcTank = new ItemStack((Block)getReflectedItem(bcFactory, "tankBlock"));
-            ItemStack piston = new ItemStack(Block.pistonBase);
-            ItemStack diamond = new ItemStack(Item.diamond);
-            ItemStack redstone = new ItemStack(Item.redstone);
+            ModRecipes.setupBCRecipes();
 
             // Register blocks and recipes
             GameRegistry.registerTileEntity(TileLiquifierMJ.class, "TileLiquifierMJ");
@@ -163,17 +126,7 @@ public class ForgeRegistrations {
                     .setStepSound(Block.soundWoodFootstep)
                     .setBlockName("blockLiquifyMJ")
                     .setCreativeTab(CreativeTabs.tabRedstone);
-            GameRegistry.registerBlock(ModObjects.liquifierMJ, "blockLiquifyMJ");
-            LanguageRegistry.addName(ModObjects.liquifierMJ, "MJ Liquifier");
-            MinecraftForge.setBlockHarvestLevel(ModObjects.liquifierMJ, "pickaxe", 0);
-            /*
-             * MJ Liquifier:
-             * [ ][T][ ]
-             * [G][D][G]
-             * [P][R][P]
-             */
-            GameRegistry.addRecipe(new ItemStack(ModObjects.liquifierMJ), " t ", "gdg", "prp",
-                    't', bcTank, 'g', goldGear, 'd', diamond, 'p', piston, 'r', redstone);
+            registerBlock(ModObjects.liquifierMJ, "blockLiquifyMJ", "MJ Liquifier", ModRecipes.blockLiquifierMJ);
 
             GameRegistry.registerTileEntity(TileGeneratorMJ.class, "TileGeneratorMJ");
             ModObjects.generatorMJ = new BlockGeneratorMJ(Settings.blockGeneratorMJ, 3, Material.anvil)
@@ -181,41 +134,21 @@ public class ForgeRegistrations {
                     .setStepSound(Block.soundWoodFootstep)
                     .setBlockName("blockGeneratorMJ")
                     .setCreativeTab(CreativeTabs.tabRedstone);
-            GameRegistry.registerBlock(ModObjects.generatorMJ, "blockGeneratorMJ");
-            LanguageRegistry.addName(ModObjects.generatorMJ, "MJ Generator");
-            MinecraftForge.setBlockHarvestLevel(ModObjects.generatorMJ, "pickaxe", 0);
-            /*
-             * MJ Generator:
-             * [ ][P][ ]
-             * [G][D][G]
-             * [T][R][T]
-             */
-            GameRegistry.addRecipe(new ItemStack(ModObjects.generatorMJ), " p ", "gdg", "trt",
-                    't', bcTank, 'g', goldGear, 'd', diamond, 'p', piston, 'r', redstone);
+            registerBlock(ModObjects.generatorMJ, "blockGeneratorMJ", "MJ Generator", ModRecipes.blockGeneratorMJ);
 
             LiquidEnergy.logger.info("[Integrations: BC Energy] Loaded integration module. Enabling MJ liquifier and generator.");
             return true;
-        } catch (Exception e) {
-            // TODO: make this error catch a bit more precise; send anything that -isn't- a ClassNotFound to Sentry.
-            LiquidEnergy.logger.warning("[Integrations: BC Energy] Could not find Buildcraft! Disabling MJ liquifier and generator (" + e.toString() + ")");
+        } catch (ClassNotFoundException e) {
+            LiquidEnergy.logger.warning("[Integrations: BC Energy] Could not find Buildcraft! Disabling MJ liquifier and generator (ClassNotFoundException)");
             return false;
         }
     }
 
-    /**
-     * Helper method to get items/blocks through reflection
-     *
-     * @param cl Class to search in
-     * @param fieldName Name of the field where the item/block is stored
-     * @return The object if found (cast it) or null.
-     */
-    private static Object getReflectedItem(Class cl, String fieldName) {
-        try {
-            return cl.getDeclaredField(fieldName).get(null);
-        } catch (Exception e) {
-            LiquidEnergy.logger.warning("Failed in getReflectedItem: " + e.getMessage());
-            return null;
-        }
+    private static void registerBlock(Block bl, String internalName, String externalName, Object... recipe) {
+        GameRegistry.registerBlock(bl, internalName);
+        LanguageRegistry.addName(bl, externalName);
+        MinecraftForge.setBlockHarvestLevel(bl, "pickaxe", 0);
+        GameRegistry.addRecipe(new ItemStack(bl), recipe);
     }
 
 }

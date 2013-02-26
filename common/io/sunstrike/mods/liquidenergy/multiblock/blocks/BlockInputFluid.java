@@ -3,7 +3,7 @@ package io.sunstrike.mods.liquidenergy.multiblock.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
-/**
+/*
  * BlockInputFluid
  * io.sunstrike.mods.liquidenergy.multiblock
  * LiquidEnergy

@@ -18,7 +18,7 @@ import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 
-/**
+/*
  * TileGeneratorEU
  * io.sunstrike.mods.liquidenergy.blocks.tiles
  * LiquidEnergy

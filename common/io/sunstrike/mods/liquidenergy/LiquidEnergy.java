@@ -15,7 +15,7 @@ import net.minecraftforge.common.Configuration;
 
 import java.util.logging.Logger;
 
-/**
+/*
  * LiquidEnergy
  * io.sunstrike.mods.liquidenergy
  * LiquidEnergy

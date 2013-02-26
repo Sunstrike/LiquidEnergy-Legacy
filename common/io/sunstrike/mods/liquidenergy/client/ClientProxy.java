@@ -6,7 +6,7 @@ import io.sunstrike.mods.liquidenergy.external.buildcraft.core.render.TextureLiq
 import net.minecraft.client.renderer.RenderEngine;
 import net.minecraftforge.client.MinecraftForgeClient;
 
-/**
+/*
  * ClientProxy
  * io.sunstrike.mods.liquidenergy.client
  * LiquidEnergy

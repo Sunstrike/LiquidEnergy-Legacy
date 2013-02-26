@@ -3,7 +3,7 @@ package io.sunstrike.mods.liquidenergy.items;
 import net.minecraft.item.Item;
 import net.minecraftforge.liquids.ILiquid;
 
-/**
+/*
  * ItemLiquidNavitas
  * io.sunstrike.mods.liquidenergy.items
  * LiquidEnergy

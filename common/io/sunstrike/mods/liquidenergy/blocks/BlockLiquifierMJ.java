@@ -10,7 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-/**
+/*
  * BlockLiquifierEU
  * io.sunstrike.mods.liquidenergy.blocks
  * LiquidEnergy

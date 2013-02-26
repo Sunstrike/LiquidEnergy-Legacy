@@ -5,7 +5,7 @@ import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 
-/**
+/*
  * MultiblockDiscoveryHelper
  * io.sunstrike.mods.liquidenergy.helpers
  * LiquidEnergy

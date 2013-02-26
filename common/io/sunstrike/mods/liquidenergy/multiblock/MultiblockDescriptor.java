@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-/**
+/*
  * MultiblockDescriptor
  * io.sunstrike.mods.liquidenergy.multiblock
  * LiquidEnergy
