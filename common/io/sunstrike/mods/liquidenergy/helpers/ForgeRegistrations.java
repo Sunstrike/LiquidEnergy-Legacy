@@ -14,6 +14,10 @@ import io.sunstrike.mods.liquidenergy.blocks.tiles.TileLiquifierMJ;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import io.sunstrike.mods.liquidenergy.configuration.Settings;
 import io.sunstrike.mods.liquidenergy.items.ItemLiquidNavitas;
+import io.sunstrike.mods.liquidenergy.multiblock.blocks.BlockComponentTank;
+import io.sunstrike.mods.liquidenergy.multiblock.blocks.BlockInputFluid;
+import io.sunstrike.mods.liquidenergy.multiblock.blocks.BlockOutputFluid;
+import io.sunstrike.mods.liquidenergy.multiblock.blocks.BlockStructure;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -69,12 +73,47 @@ public class ForgeRegistrations {
      * Register all LE blocks
      */
     public static void registerBlocks() {
+        // Register shared blocks
+        registerSharedBlocks();
+
         // Booleans for no-mod catch
         boolean ic2 = checkIC2();
         boolean bc = checkBCEnergy();
 
         // Catch lack of ANY power mods
         if (!(ic2 || bc)) throw new RuntimeException("Must have Buildcraft and/or IC2 installed!");
+    }
+
+    /**
+     * Private helper for registering shared blocks
+     */
+    private static void registerSharedBlocks() {
+        //GameRegistry.registerTileEntity(TileComponentTank.class, "TileComponentTank");
+        ModObjects.blockComponentTank = new BlockComponentTank(Settings.blockComponentTank, 4, Material.glass)
+                .setStepSound(Block.soundGlassFootstep)
+                .setBlockName("blockComponentTank")
+                .setCreativeTab(CreativeTabs.tabRedstone);
+        registerBlock(ModObjects.blockComponentTank, "blockComponentTank", "Transformer Tank", 1, ModRecipes.blockComponentTank);
+
+        //GameRegistry.registerTileEntity(TileInputFluid.class, "TileInputFluid");
+        ModObjects.blockInputFluid = new BlockInputFluid(Settings.blockInputFluid, 4, Material.iron)
+                .setStepSound(Block.soundMetalFootstep)
+                .setBlockName("blockInputFluid")
+                .setCreativeTab(CreativeTabs.tabRedstone);
+        registerBlock(ModObjects.blockInputFluid, "blockInputFluid", "Fluid Input", 1, ModRecipes.blockInputFluid);
+
+        //GameRegistry.registerTileEntity(TileOutputFluid.class, "TileOutputFluid");
+        ModObjects.blockOutputFluid = new BlockOutputFluid(Settings.blockOutputFluid, 4, Material.iron)
+                .setStepSound(Block.soundMetalFootstep)
+                .setBlockName("blockOutputFluid")
+                .setCreativeTab(CreativeTabs.tabRedstone);
+        registerBlock(ModObjects.blockOutputFluid, "blockOutputFluid", "Fluid Output", 1, ModRecipes.blockOutputFluid);
+
+        ModObjects.blockStructure = new BlockStructure(Settings.blockStructure, 4, Material.rock)
+                .setStepSound(Block.soundStoneFootstep)
+                .setBlockName("blockStructure")
+                .setCreativeTab(CreativeTabs.tabRedstone);
+        registerBlock(ModObjects.blockStructure, "blockStructure", "Transformer Structure", 1, ModRecipes.blockStructure);
     }
 
     /**
@@ -95,7 +134,7 @@ public class ForgeRegistrations {
                     .setStepSound(Block.soundWoodFootstep)
                     .setBlockName("blockLiquifyEU")
                     .setCreativeTab(CreativeTabs.tabRedstone);
-            registerBlock(ModObjects.liquifierEU, "blockLiquifyEU", "EU Liquifier", ModRecipes.blockLiquifierEU);
+            registerBlock(ModObjects.liquifierEU, "blockLiquifyEU", "EU Liquifier", 1, ModRecipes.blockLiquifierEU);
 
             GameRegistry.registerTileEntity(TileGeneratorEU.class, "TileGeneratorEU");
             ModObjects.generatorEU = new BlockGeneratorEU(Settings.blockGeneratorEU, 1, Material.anvil)
@@ -103,7 +142,7 @@ public class ForgeRegistrations {
                     .setStepSound(Block.soundWoodFootstep)
                     .setBlockName("blockGeneratorEU")
                     .setCreativeTab(CreativeTabs.tabRedstone);
-            registerBlock(ModObjects.generatorEU, "blockGeneratorEU", "EU Generator", ModRecipes.blockGeneratorEU);
+            registerBlock(ModObjects.generatorEU, "blockGeneratorEU", "EU Generator", 1, ModRecipes.blockGeneratorEU);
 
             LiquidEnergy.logger.info("[Integrations: IC2] Loaded integration module. Enabling EU liquifier and generator.");
             return true;
@@ -131,7 +170,7 @@ public class ForgeRegistrations {
                     .setStepSound(Block.soundWoodFootstep)
                     .setBlockName("blockLiquifyMJ")
                     .setCreativeTab(CreativeTabs.tabRedstone);
-            registerBlock(ModObjects.liquifierMJ, "blockLiquifyMJ", "MJ Liquifier", ModRecipes.blockLiquifierMJ);
+            registerBlock(ModObjects.liquifierMJ, "blockLiquifyMJ", "MJ Liquifier", 1, ModRecipes.blockLiquifierMJ);
 
             GameRegistry.registerTileEntity(TileGeneratorMJ.class, "TileGeneratorMJ");
             ModObjects.generatorMJ = new BlockGeneratorMJ(Settings.blockGeneratorMJ, 3, Material.anvil)
@@ -139,7 +178,7 @@ public class ForgeRegistrations {
                     .setStepSound(Block.soundWoodFootstep)
                     .setBlockName("blockGeneratorMJ")
                     .setCreativeTab(CreativeTabs.tabRedstone);
-            registerBlock(ModObjects.generatorMJ, "blockGeneratorMJ", "MJ Generator", ModRecipes.blockGeneratorMJ);
+            registerBlock(ModObjects.generatorMJ, "blockGeneratorMJ", "MJ Generator", 1, ModRecipes.blockGeneratorMJ);
 
             LiquidEnergy.logger.info("[Integrations: BC Energy] Loaded integration module. Enabling MJ liquifier and generator.");
             return true;
@@ -149,11 +188,11 @@ public class ForgeRegistrations {
         }
     }
 
-    private static void registerBlock(Block bl, String internalName, String externalName, Object... recipe) {
+    private static void registerBlock(Block bl, String internalName, String externalName, int amount, Object... recipe) {
         GameRegistry.registerBlock(bl, internalName);
         LanguageRegistry.addName(bl, externalName);
         MinecraftForge.setBlockHarvestLevel(bl, "pickaxe", 0);
-        GameRegistry.addRecipe(new ItemStack(bl), recipe);
+        GameRegistry.addRecipe(new ItemStack(bl, amount), recipe);
     }
 
 }

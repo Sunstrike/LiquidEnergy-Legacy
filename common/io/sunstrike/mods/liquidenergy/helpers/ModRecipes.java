@@ -44,9 +44,45 @@ public class ModRecipes {
     public static Object[] blockLiquifierEU;
     public static Object[] blockGeneratorEU;
 
+    public static Object[] blockInputEU;
+    public static Object[] blockOutputEU;
+
     // BC BLOCKS
     public static Object[] blockLiquifierMJ;
     public static Object[] blockGeneratorMJ;
+
+    public static Object[] blockInputMJ;
+    public static Object[] blockOuputMJ;
+
+    // SHARED BLOCKS (VANILLA)
+    /*
+     * Tank
+     * [G][G][G]
+     * [R][B][R]
+     * [G][G][G]
+     */
+    public static Object[] blockComponentTank = new Object[]{"ggg", "rbr", "ggg", 'g', new ItemStack(Block.glass), 'r', new ItemStack(Item.redstone), 'b', new ItemStack(Block.stoneBrick)};
+    /*
+     * Fluid input
+     * [T][T][T]
+     * [P][D][R]
+     * [T][T][T]
+     */
+    public static Object[] blockInputFluid = new Object[]{"ttt", "pdr", "ttt", 't', new ItemStack(Block.thinGlass), 'p', new ItemStack(Block.pistonBase), 'd', new ItemStack(Item.diamond), 'r', new ItemStack(Item.redstone)};
+    /*
+     * Fluid output
+     * [T][T][T]
+     * [I][D][R]
+     * [T][T][T]
+     */
+    public static Object[] blockOutputFluid = new Object[]{"ttt", "idr", "ttt", 't', new ItemStack(Block.thinGlass), 'i', new ItemStack(Block.dispenser), 'd', new ItemStack(Item.diamond), 'r', new ItemStack(Item.redstone)};
+    /*
+     * Structure blocks x4
+     * [S][S][S]
+     * [S][R][S]
+     * [S][S][S]
+     */
+    public static Object[] blockStructure = new Object[]{"sss", "srs", "sss", 's', new ItemStack(Block.stoneBrick), 'r', new ItemStack(Item.redstone)};
 
     /**
      * Call before using any IC2 item-including recipes (to grab items from IC2 API)

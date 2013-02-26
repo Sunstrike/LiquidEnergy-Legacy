@@ -44,7 +44,7 @@ public class ModObjects {
     public static Block blockComponentTank;
     public static Block blockInputEU;
     public static Block blockInputMJ;
-    public static Block BlockInputFluid;
+    public static Block blockInputFluid;
     public static Block blockOutputEU;
     public static Block blockOutputMJ;
     public static Block blockOutputFluid;

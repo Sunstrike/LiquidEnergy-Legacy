@@ -45,7 +45,7 @@ public class Settings {
     public static int blockComponentTank = 1464;
     public static int blockInputEU = 1465;
     public static int blockInputMJ = 1466;
-    public static int BlockInputFluid = 1467;
+    public static int blockInputFluid = 1467;
     public static int blockOutputEU = 1468;
     public static int blockOutputMJ = 1469;
     public static int blockOutputFluid = 1470;
@@ -71,7 +71,7 @@ public class Settings {
         blockComponentTank = config.getBlock("blockComponentTank", blockComponentTank).getInt();
         blockInputEU = config.getBlock("blockInputEU", blockInputEU).getInt();
         blockInputMJ = config.getBlock("blockInputMJ", blockInputMJ).getInt();
-        BlockInputFluid = config.getBlock("BlockInputFluid", BlockInputFluid).getInt();
+        blockInputFluid = config.getBlock("BlockInputFluid", blockInputFluid).getInt();
         blockOutputEU = config.getBlock("blockOutputEU", blockOutputEU).getInt();
         blockOutputMJ = config.getBlock("blockOutputMJ", blockOutputMJ).getInt();
         blockOutputFluid = config.getBlock("blockOutputFluid", blockOutputFluid).getInt();

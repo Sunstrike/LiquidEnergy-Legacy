@@ -38,7 +38,7 @@ public enum ComponentDescriptor {
     INTERNAL_TANK   (ModObjects.blockComponentTank, Settings.blockComponentTank),
     INPUT_POWER_EU  (ModObjects.blockInputEU, Settings.blockComponentTank),
     INPUT_POWER_MJ  (ModObjects.blockInputMJ, Settings.blockComponentTank),
-    INPUT_FLUID     (ModObjects.BlockInputFluid, Settings.blockComponentTank),
+    INPUT_FLUID     (ModObjects.blockInputFluid, Settings.blockComponentTank),
     OUTPUT_POWER_EU (ModObjects.blockOutputEU, Settings.blockComponentTank),
     OUTPUT_POWER_MJ (ModObjects.blockOutputMJ, Settings.blockComponentTank),
     OUTPUT_FLUID    (ModObjects.blockOutputFluid, Settings.blockComponentTank),
