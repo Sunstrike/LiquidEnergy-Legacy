@@ -39,7 +39,6 @@ import java.util.Map;
  */
 public class MultiblockDescriptor {
 
-    public int x, y, z;
     public StructureType type;
     private ArrayListMultimap<ComponentDescriptor, Position> parts;
 
