@@ -1,6 +1,7 @@
 package io.sunstrike.mods.liquidenergy.helpers;
 
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 
 /*
  * Position
@@ -45,6 +46,33 @@ public class Position {
         this.y = y;
         this.z = z;
         this.world = world;
+    }
+
+    public Position shiftInDirection(ForgeDirection dir) {
+        Position p = new Position(x, y, z, world);
+        switch (dir) {
+            case UP:
+                p.y++;
+                break;
+            case DOWN:
+                p.y--;
+                break;
+            case NORTH:
+                p.x++;
+                break;
+            case SOUTH:
+                p.x--;
+                break;
+            case EAST:
+                p.z++;
+                break;
+            case WEST:
+                p.z--;
+                break;
+            default:
+                break;
+        }
+        return p;
     }
 
 }

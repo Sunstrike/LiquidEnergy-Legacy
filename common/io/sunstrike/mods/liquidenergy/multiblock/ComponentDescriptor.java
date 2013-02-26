@@ -1,5 +1,9 @@
 package io.sunstrike.mods.liquidenergy.multiblock;
 
+import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
+import io.sunstrike.mods.liquidenergy.configuration.Settings;
+import net.minecraft.block.Block;
+
 /*
  * ComponentDescriptor
  * io.sunstrike.mods.liquidenergy.multiblock
@@ -31,13 +35,50 @@ package io.sunstrike.mods.liquidenergy.multiblock;
  */
 public enum ComponentDescriptor {
 
-    INTERNAL_TANK,
-    INPUT_POWER_EU,
-    INPUT_POWER_MJ,
-    INPUT_FLUID,
-    OUTPUT_POWER_EU,
-    OUTPUT_POWER_MJ,
-    OUTPUT_FLUID,
-    STRUCTURE;
+    INTERNAL_TANK   (ModObjects.blockComponentTank, Settings.blockComponentTank),
+    INPUT_POWER_EU  (ModObjects.blockInputEU, Settings.blockComponentTank),
+    INPUT_POWER_MJ  (ModObjects.blockInputMJ, Settings.blockComponentTank),
+    INPUT_FLUID     (ModObjects.BlockInputFluid, Settings.blockComponentTank),
+    OUTPUT_POWER_EU (ModObjects.blockOutputEU, Settings.blockComponentTank),
+    OUTPUT_POWER_MJ (ModObjects.blockOutputMJ, Settings.blockComponentTank),
+    OUTPUT_FLUID    (ModObjects.blockOutputFluid, Settings.blockComponentTank),
+    STRUCTURE       (ModObjects.blockStructure, Settings.blockComponentTank);
 
+    private final Block block;
+    private final int id;
+
+    ComponentDescriptor(Block bl, int id) {
+        this.block = bl;
+        this.id = id;
+    }
+
+    /**
+     * Return the appropriate descriptor for a given block
+     *
+     * @param bl The block to get a descriptor for
+     * @return The blocks descriptor or null if not valid
+     */
+    public static ComponentDescriptor getDescriptorForBlock(Block bl) {
+        for (ComponentDescriptor c : ComponentDescriptor.values()) {
+            if (c.getBlock() == bl) return c;
+        }
+
+        return null;
+    }
+
+    public static ComponentDescriptor getDescriptorForBlockID(int id) {
+        for (ComponentDescriptor c : ComponentDescriptor.values()) {
+            if (c.getId() == id) return c;
+        }
+
+        return null;
+    }
+
+    private Block getBlock() {
+        return block;
+    }
+
+    private int getId() {
+        return id;
+    }
 }
