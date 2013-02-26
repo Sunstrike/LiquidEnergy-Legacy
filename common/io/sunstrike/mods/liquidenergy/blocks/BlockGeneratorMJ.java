@@ -1,8 +1,6 @@
 package io.sunstrike.mods.liquidenergy.blocks;
 
-import io.sunstrike.mods.liquidenergy.CommonProxy;
 import io.sunstrike.mods.liquidenergy.blocks.tiles.TileGeneratorMJ;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,16 +37,11 @@ import net.minecraft.world.World;
  *
  * @author Sunstrike <sunstrike@azurenode.net>
  */
-public class BlockGeneratorMJ extends Block {
+public class BlockGeneratorMJ extends LEBlock {
 
 	public BlockGeneratorMJ(int id, int tex, Material mat) {
 		super(id, tex, mat);
 		setHardness(5F);
-	}
-
-	@Override
-	public String getTextureFile() {
-		return CommonProxy.BLOCK_PNG;
 	}
 
 	@Override

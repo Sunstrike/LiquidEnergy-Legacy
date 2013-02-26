@@ -1,15 +1,11 @@
 package io.sunstrike.mods.liquidenergy.blocks;
 
-import io.sunstrike.mods.liquidenergy.blocks.tiles.TileLiquifierEU;
+import io.sunstrike.mods.liquidenergy.CommonProxy;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 
-/*
- * BlockLiquifierEU
+/**
+ * LEBlock
  * io.sunstrike.mods.liquidenergy.blocks
  * LiquidEnergy
  *
@@ -23,7 +19,7 @@ import net.minecraft.world.World;
  *
  * The above copyright notice and this permission notice shall be included in all copies or substantial
  * portions of the Software.
-
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
  * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
@@ -33,45 +29,19 @@ import net.minecraft.world.World;
  */
 
 /**
- * MJ Liquifier block
+ * Root block class for all LE blocks.
  *
  * @author Sunstrike <sunstrike@azurenode.net>
  */
-public class BlockLiquifierEU extends LEBlock {
+public class LEBlock extends Block {
 
-	public BlockLiquifierEU(int id, int tex, Material mat) {
-		super(id, tex, mat);
-		setHardness(5F);
-	}
-	
-	@Override
-	public boolean hasTileEntity(int meta) {
-		return true;
-	}
-	
-	@Override
-	public TileEntity createTileEntity(World world, int meta) {
-		return new TileLiquifierEU();
-	}
-	
-	@Override
-	public boolean isOpaqueCube() {
-		return true;
-	}
-	
-	@Override
-	public void breakBlock(World world, int x, int y, int z, int id, int meta) {
-		// TODO: Drop liquid block on break and/or damage player for breaking in-use block
-		super.breakBlock(world, x, y, z, id, meta);
-	}
-	
-	@Override
-	public void onBlockClicked(World w, int x, int y, int z, EntityPlayer player) {
-		TileEntity te = w.getBlockTileEntity(x, y, z);
-		if (!(te instanceof TileLiquifierEU) || !(player instanceof EntityPlayerMP)) return;
-		if (player.getCurrentEquippedItem().getItem() == Item.stick) {
-			((TileLiquifierEU) te).sendDebugToPlayer(player);
-		}
-	}
+    public LEBlock(int id, int tex, Material mat) {
+        super(id, tex, mat);
+    }
+
+    @Override
+    public String getTextureFile() {
+        return CommonProxy.BLOCK_PNG;
+    }
 
 }

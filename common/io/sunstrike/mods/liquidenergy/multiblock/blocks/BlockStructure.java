@@ -1,6 +1,6 @@
 package io.sunstrike.mods.liquidenergy.multiblock.blocks;
 
-import net.minecraft.block.Block;
+import io.sunstrike.mods.liquidenergy.blocks.LEBlock;
 import net.minecraft.block.material.Material;
 
 /*
@@ -32,7 +32,7 @@ import net.minecraft.block.material.Material;
  *
  * @author Sunstrike <sunstrike@azurenode.net>
  */
-public class BlockStructure extends Block {
+public class BlockStructure extends LEBlock {
 
     public BlockStructure(int id, int tex, Material mat) {
         super(id, tex, mat);

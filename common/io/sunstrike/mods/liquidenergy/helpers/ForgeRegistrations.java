@@ -106,11 +106,11 @@ public class ForgeRegistrations {
                 .setCreativeTab(CreativeTabs.tabRedstone);
         registerBlock(ModObjects.blockOutputFluid, "blockOutputFluid", "Fluid Output", 1, ModRecipes.blockOutputFluid);
 
-        ModObjects.blockStructure = new BlockStructure(Settings.blockStructure, 4, Material.rock)
+        ModObjects.blockStructure = new BlockStructure(Settings.blockStructure, 7, Material.rock)
                 .setStepSound(Block.soundStoneFootstep)
                 .setBlockName("blockStructure")
                 .setCreativeTab(CreativeTabs.tabRedstone);
-        registerBlock(ModObjects.blockStructure, "blockStructure", "Transformer Structure", 7, ModRecipes.blockStructure);
+        registerBlock(ModObjects.blockStructure, "blockStructure", "Transformer Structure", 4, ModRecipes.blockStructure);
     }
 
     /**
@@ -186,6 +186,20 @@ public class ForgeRegistrations {
                     .setBlockName("blockGeneratorMJ")
                     .setCreativeTab(CreativeTabs.tabRedstone);
             registerBlock(ModObjects.generatorMJ, "blockGeneratorMJ", "MJ Generator", 1, ModRecipes.blockGeneratorMJ);
+
+            //GameRegistry.registerTileEntity(TileInputMJ.class, "TileInputMJ");
+            ModObjects.blockInputMJ = new BlockInputMJ(Settings.blockInputMJ, 10, Material.iron)
+                    .setStepSound(Block.soundMetalFootstep)
+                    .setBlockName("blockInputMJ")
+                    .setCreativeTab(CreativeTabs.tabRedstone);
+            registerBlock(ModObjects.blockInputMJ, "blockInputMJ", "MJ Input", 1, ModRecipes.blockInputMJ);
+
+            //GameRegistry.registerTileEntity(TileOutputMJ.class, "TileOutputMJ");
+            ModObjects.blockOutputMJ = new BlockOutputMJ(Settings.blockOutputMJ, 11, Material.iron)
+                    .setStepSound(Block.soundMetalFootstep)
+                    .setBlockName("blockOutputMJ")
+                    .setCreativeTab(CreativeTabs.tabRedstone);
+            registerBlock(ModObjects.blockOutputMJ, "blockOutputMJ", "MJ Output", 1, ModRecipes.blockOutputMJ);
 
             LiquidEnergy.logger.info("[Integrations: BC Energy] Loaded integration module. Enabling MJ liquifier and generator.");
             return true;

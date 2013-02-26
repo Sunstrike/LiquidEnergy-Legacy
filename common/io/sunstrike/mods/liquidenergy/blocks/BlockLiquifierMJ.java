@@ -1,8 +1,6 @@
 package io.sunstrike.mods.liquidenergy.blocks;
 
-import io.sunstrike.mods.liquidenergy.CommonProxy;
 import io.sunstrike.mods.liquidenergy.blocks.tiles.TileLiquifierMJ;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,16 +37,11 @@ import net.minecraft.world.World;
  *
  * @author Sunstrike <sunstrike@azurenode.net>
  */
-public class BlockLiquifierMJ extends Block {
+public class BlockLiquifierMJ extends LEBlock {
 
 	public BlockLiquifierMJ(int id, int tex, Material mat) {
 		super(id, tex, mat);
 		setHardness(5F);
-	}
-
-	@Override
-	public String getTextureFile() {
-		return CommonProxy.BLOCK_PNG;
 	}
 
 	@Override

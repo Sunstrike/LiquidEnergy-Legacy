@@ -2,9 +2,9 @@ package io.sunstrike.mods.liquidenergy.multiblock.blocks;
 
 import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
+import io.sunstrike.mods.liquidenergy.blocks.LEBlock;
 import io.sunstrike.mods.liquidenergy.helpers.MultiblockDiscoveryHelper;
 import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -40,7 +40,7 @@ import net.minecraft.world.World;
  *
  * @author Sunstrike <sunstrike@azurenode.net>
  */
-public class BlockInput extends Block {
+public class BlockInput extends LEBlock {
 
     public BlockInput(int id, int tex, Material mat) {
         super(id, tex, mat);

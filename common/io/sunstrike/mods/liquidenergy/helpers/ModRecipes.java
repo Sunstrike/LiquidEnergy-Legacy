@@ -52,7 +52,7 @@ public class ModRecipes {
     public static Object[] blockGeneratorMJ;
 
     public static Object[] blockInputMJ;
-    public static Object[] blockOuputMJ;
+    public static Object[] blockOutputMJ;
 
     // SHARED BLOCKS (VANILLA)
     /*
@@ -178,7 +178,7 @@ public class ModRecipes {
          * [P][D][P]
          * [I][I][I]
          */
-        blockOuputMJ = new Object[]{" g ", "pdp", "iii", 'g', goldGear, 'd', diamond, 'p', piston, 'i', ironIngot};
+        blockOutputMJ = new Object[]{" g ", "pdp", "iii", 'g', goldGear, 'd', diamond, 'p', piston, 'i', ironIngot};
     }
 
     /**
