@@ -44,6 +44,13 @@ import java.util.List;
  */
 public class MultiblockDiscoveryHelper {
 
+    /**
+     * Public method to attempt creation of a valid Multiblock structure
+     *
+     * @param location The position to start checking
+     * @param caller The block calling for the check (instance of a multiblock component)
+     * @return A MultiblockDescriptor of a complete structure or null if one could not be built
+     */
     public static MultiblockDescriptor discoverTransformerStructure(Position location, Block caller) {
         if (caller instanceof BlockComponentTank) {
             return __discoverTransformerFromTank(location);
@@ -56,6 +63,11 @@ public class MultiblockDiscoveryHelper {
         }
     }
 
+    /**
+     * Private helper: Discover a transformer structure from a given position
+     * @param location Output block to start with
+     * @return A MultiblockDescriptor of a complete structure or null if one could not be built
+     */
     private static MultiblockDescriptor __discoverTransformerFromOutput(Position location) {
         // Find a nearby tank and invoke that with __discoverTransformerFromTank
         ForgeDirection[] dirs = ForgeDirection.values();
@@ -71,6 +83,11 @@ public class MultiblockDiscoveryHelper {
         return result;
     }
 
+    /**
+     * Private helper: Discover a transformer structure from a given position
+     * @param location Input block to start with
+     * @return A MultiblockDescriptor of a complete structure or null if one could not be built
+     */
     private static MultiblockDescriptor __discoverTransformerFromInput(Position location) {
         MultiblockDescriptor result = null;
         for (int x = -1; x > 1; x++) {
@@ -86,6 +103,11 @@ public class MultiblockDiscoveryHelper {
         return result;
     }
 
+    /**
+     * Private helper: Discover a transformer structure from a given position
+     * @param posi Tank block to start with
+     * @return A MultiblockDescriptor of a complete structure or null if one could not be built
+     */
     private static MultiblockDescriptor __discoverTransformerFromTank(Position posi) {
         ArrayListMultimap<ComponentDescriptor, Position> parts = ArrayListMultimap.create();
         parts.put(ComponentDescriptor.INTERNAL_TANK, posi);
