@@ -90,6 +90,8 @@ public class ModRecipes {
     public static void setupIC2Recipes() throws NullPointerException {
         ItemStack piston = new ItemStack(Block.pistonBase);
         ItemStack glass = new ItemStack(Block.thinGlass);
+        ItemStack ironIngot = new ItemStack(Item.ingotIron);
+        ItemStack redstone = new ItemStack(Item.redstone);
         ItemStack fiberCable = Items.getItem("glassFiberCableItem");
         ItemStack batbox = Items.getItem("batBox");
         ItemStack lvTransformer = Items.getItem("lvTransformer");
@@ -97,8 +99,7 @@ public class ModRecipes {
         if (fiberCable == null || batbox == null || lvTransformer == null) throw new NullPointerException();
 
         /*
-         * EU Liquifier:
-         *
+         * EU Liquifier
          * [P][B][P]
          * [C][L][C]
          * [G][G][G]
@@ -106,13 +107,28 @@ public class ModRecipes {
         blockLiquifierEU = new Object[]{"pbp", "clc", "ggg", 'p', piston, 'b', batbox, 'c', fiberCable, 'l', lvTransformer, 'g', glass};
 
         /*
-         * EU Generator:
-         *
+         * EU Generator
          * [P][L][P]
          * [C][B][C]
          * [G][G][G]
          */
         blockGeneratorEU = new Object[]{"plp", "cbc", "ggg", 'p', piston, 'b', batbox, 'c', fiberCable, 'l', lvTransformer, 'g', glass};
+
+        /*
+         * EU Input
+         * [R][C][R]
+         * [L][B][L]
+         * [I][I][I]
+         */
+        blockInputEU = new Object[]{"rcr", "lbl", "iii", 'r', redstone, 'b', batbox, 'c', fiberCable, 'l', lvTransformer, 'i', ironIngot};
+
+        /*
+         * EU Output
+         * [R][L][R]
+         * [C][B][C]
+         * [I][I][I]
+         */
+        blockOutputEU = new Object[]{"rcr", "lbl", "iii", 'r', redstone, 'b', batbox, 'c', fiberCable, 'l', lvTransformer, 'i', ironIngot};
     }
 
     /**
@@ -130,9 +146,10 @@ public class ModRecipes {
         ItemStack piston = new ItemStack(Block.pistonBase);
         ItemStack diamond = new ItemStack(Item.diamond);
         ItemStack redstone = new ItemStack(Item.redstone);
+        ItemStack ironIngot = new ItemStack(Item.ingotIron);
 
         /*
-         * MJ Liquifier:
+         * MJ Liquifier
          * [ ][T][ ]
          * [G][D][G]
          * [P][R][P]
@@ -140,12 +157,28 @@ public class ModRecipes {
         blockLiquifierMJ = new Object[]{" t ", "gdg", "prp", 't', bcTank, 'g', goldGear, 'd', diamond, 'p', piston, 'r', redstone};
 
         /*
-         * MJ Generator:
+         * MJ Generator
          * [ ][P][ ]
          * [G][D][G]
          * [T][R][T]
          */
         blockGeneratorMJ = new Object[]{" p ", "gdg", "trt", 't', bcTank, 'g', goldGear, 'd', diamond, 'p', piston, 'r', redstone};
+
+        /*
+         * MJ Input
+         * [ ][G][ ]
+         * [R][D][R]
+         * [I][I][I]
+         */
+        blockInputMJ = new Object[]{" g ", "rdr", "iii", 'g', goldGear, 'd', diamond, 'r', redstone, 'i', ironIngot};
+
+        /*
+         * MJ Output
+         * [ ][G][ ]
+         * [P][D][P]
+         * [I][I][I]
+         */
+        blockOuputMJ = new Object[]{" g ", "pdp", "iii", 'g', goldGear, 'd', diamond, 'p', piston, 'i', ironIngot};
     }
 
     /**

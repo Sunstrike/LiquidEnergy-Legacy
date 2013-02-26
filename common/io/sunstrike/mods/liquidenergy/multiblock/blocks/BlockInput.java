@@ -1,9 +1,18 @@
 package io.sunstrike.mods.liquidenergy.multiblock.blocks;
 
+import io.sunstrike.api.liquidenergy.Position;
+import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
+import io.sunstrike.mods.liquidenergy.helpers.MultiblockDiscoveryHelper;
+import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
-/*
- * BlockOutputMJ
+/**
+ * BlockInput
  * io.sunstrike.mods.liquidenergy.multiblock.blocks
  * LiquidEnergy
  *
@@ -27,14 +36,30 @@ import net.minecraft.block.material.Material;
  */
 
 /**
- * Multiblock component: MJ output
+ * Root class for multiblock input blocks
  *
  * @author Sunstrike <sunstrike@azurenode.net>
  */
-public class BlockOutputMJ extends BlockOutput {
+public class BlockInput extends Block {
 
-    public BlockOutputMJ(int id, int tex, Material mat) {
+    public BlockInput(int id, int tex, Material mat) {
         super(id, tex, mat);
+        setHardness(5F);
+    }
+
+    @Override
+    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
+        super.onBlockClicked(world, x, y, z, player);
+        if (world.isRemote) return;
+        ItemStack held = player.getCurrentEquippedItem();
+        if (held == null || held.getItem() != Item.stick) return;
+
+        MultiblockDescriptor desc = MultiblockDiscoveryHelper.discoverTransformerStructure(new Position(x, y, z, world), ComponentDescriptor.INPUT_GENERIC);
+        if (desc == null) {
+            player.addChatMessage("Got NULL from disc. helper.");
+            return;
+        }
+        player.addChatMessage("Got object from disc. helper: " + desc);
     }
 
 }

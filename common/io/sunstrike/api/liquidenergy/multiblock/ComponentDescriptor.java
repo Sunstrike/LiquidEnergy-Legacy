@@ -36,13 +36,15 @@ import net.minecraft.block.Block;
 public enum ComponentDescriptor {
 
     INTERNAL_TANK   (ModObjects.blockComponentTank, Settings.blockComponentTank),
-    INPUT_POWER_EU  (ModObjects.blockInputEU, Settings.blockComponentTank),
-    INPUT_POWER_MJ  (ModObjects.blockInputMJ, Settings.blockComponentTank),
-    INPUT_FLUID     (ModObjects.blockInputFluid, Settings.blockComponentTank),
-    OUTPUT_POWER_EU (ModObjects.blockOutputEU, Settings.blockComponentTank),
-    OUTPUT_POWER_MJ (ModObjects.blockOutputMJ, Settings.blockComponentTank),
-    OUTPUT_FLUID    (ModObjects.blockOutputFluid, Settings.blockComponentTank),
-    STRUCTURE       (ModObjects.blockStructure, Settings.blockComponentTank);
+    INPUT_POWER_EU  (ModObjects.blockInputEU, Settings.blockInputEU),
+    INPUT_POWER_MJ  (ModObjects.blockInputMJ, Settings.blockInputMJ),
+    INPUT_FLUID     (ModObjects.blockInputFluid, Settings.blockInputFluid),
+    INPUT_GENERIC   (null, -1),
+    OUTPUT_POWER_EU (ModObjects.blockOutputEU, Settings.blockOutputEU),
+    OUTPUT_POWER_MJ (ModObjects.blockOutputMJ, Settings.blockOutputMJ),
+    OUTPUT_FLUID    (ModObjects.blockOutputFluid, Settings.blockOutputFluid),
+    OUTPUT_GENERIC  (null, -1),
+    STRUCTURE       (ModObjects.blockStructure, Settings.blockStructure);
 
     private final Block block;
     private final int id;
@@ -72,6 +74,30 @@ public enum ComponentDescriptor {
         }
 
         return null;
+    }
+
+    public static boolean isInputDescriptor(ComponentDescriptor desc) {
+        switch (desc) {
+            case INPUT_FLUID:
+            case INPUT_POWER_EU:
+            case INPUT_POWER_MJ:
+            case INPUT_GENERIC:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static boolean isOutputDescriptor(ComponentDescriptor desc) {
+        switch (desc) {
+            case OUTPUT_FLUID:
+            case OUTPUT_POWER_EU:
+            case OUTPUT_POWER_MJ:
+            case OUTPUT_GENERIC:
+                return true;
+            default:
+                return false;
+        }
     }
 
     private Block getBlock() {

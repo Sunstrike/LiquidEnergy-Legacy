@@ -14,10 +14,7 @@ import io.sunstrike.mods.liquidenergy.blocks.tiles.TileLiquifierMJ;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import io.sunstrike.mods.liquidenergy.configuration.Settings;
 import io.sunstrike.mods.liquidenergy.items.ItemLiquidNavitas;
-import io.sunstrike.mods.liquidenergy.multiblock.blocks.BlockComponentTank;
-import io.sunstrike.mods.liquidenergy.multiblock.blocks.BlockInputFluid;
-import io.sunstrike.mods.liquidenergy.multiblock.blocks.BlockOutputFluid;
-import io.sunstrike.mods.liquidenergy.multiblock.blocks.BlockStructure;
+import io.sunstrike.mods.liquidenergy.multiblock.blocks.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -96,14 +93,14 @@ public class ForgeRegistrations {
         registerBlock(ModObjects.blockComponentTank, "blockComponentTank", "Transformer Tank", 1, ModRecipes.blockComponentTank);
 
         //GameRegistry.registerTileEntity(TileInputFluid.class, "TileInputFluid");
-        ModObjects.blockInputFluid = new BlockInputFluid(Settings.blockInputFluid, 4, Material.iron)
+        ModObjects.blockInputFluid = new BlockInputFluid(Settings.blockInputFluid, 5, Material.iron)
                 .setStepSound(Block.soundMetalFootstep)
                 .setBlockName("blockInputFluid")
                 .setCreativeTab(CreativeTabs.tabRedstone);
         registerBlock(ModObjects.blockInputFluid, "blockInputFluid", "Fluid Input", 1, ModRecipes.blockInputFluid);
 
         //GameRegistry.registerTileEntity(TileOutputFluid.class, "TileOutputFluid");
-        ModObjects.blockOutputFluid = new BlockOutputFluid(Settings.blockOutputFluid, 4, Material.iron)
+        ModObjects.blockOutputFluid = new BlockOutputFluid(Settings.blockOutputFluid, 6, Material.iron)
                 .setStepSound(Block.soundMetalFootstep)
                 .setBlockName("blockOutputFluid")
                 .setCreativeTab(CreativeTabs.tabRedstone);
@@ -113,7 +110,7 @@ public class ForgeRegistrations {
                 .setStepSound(Block.soundStoneFootstep)
                 .setBlockName("blockStructure")
                 .setCreativeTab(CreativeTabs.tabRedstone);
-        registerBlock(ModObjects.blockStructure, "blockStructure", "Transformer Structure", 4, ModRecipes.blockStructure);
+        registerBlock(ModObjects.blockStructure, "blockStructure", "Transformer Structure", 7, ModRecipes.blockStructure);
     }
 
     /**
@@ -138,17 +135,27 @@ public class ForgeRegistrations {
 
             GameRegistry.registerTileEntity(TileGeneratorEU.class, "TileGeneratorEU");
             ModObjects.generatorEU = new BlockGeneratorEU(Settings.blockGeneratorEU, 1, Material.anvil)
-                    .setHardness(1.0F)
                     .setStepSound(Block.soundWoodFootstep)
                     .setBlockName("blockGeneratorEU")
                     .setCreativeTab(CreativeTabs.tabRedstone);
             registerBlock(ModObjects.generatorEU, "blockGeneratorEU", "EU Generator", 1, ModRecipes.blockGeneratorEU);
 
+            //GameRegistry.registerTileEntity(TileInputEU.class, "TileInputEU");
+            ModObjects.blockInputEU = new BlockInputEU(Settings.blockInputEU, 8, Material.iron)
+                    .setStepSound(Block.soundMetalFootstep)
+                    .setBlockName("blockInputEU")
+                    .setCreativeTab(CreativeTabs.tabRedstone);
+            registerBlock(ModObjects.blockInputEU, "blockInputEU", "EU Input", 1, ModRecipes.blockInputEU);
+
+            //GameRegistry.registerTileEntity(TileOutputEU.class, "TileOutputEU");
+            ModObjects.blockOutputEU = new BlockOutputEU(Settings.blockOutputEU, 9, Material.iron)
+                    .setStepSound(Block.soundMetalFootstep)
+                    .setBlockName("blockOutputEU")
+                    .setCreativeTab(CreativeTabs.tabRedstone);
+            registerBlock(ModObjects.blockOutputEU, "blockOutputEU", "EU Output", 1, ModRecipes.blockOutputEU);
+
             LiquidEnergy.logger.info("[Integrations: IC2] Loaded integration module. Enabling EU liquifier and generator.");
             return true;
-        } catch (NullPointerException e) {
-            LiquidEnergy.logger.warning("[Integrations: IC2] Could not find IC2 Core! Disabling EU liquifier and generator (NullPointerException)");
-            return false;
         } catch (ClassNotFoundException e) {
             LiquidEnergy.logger.warning("[Integrations: IC2] Could not find IC2 Core! Disabling EU liquifier and generator (ClassNotFoundException)");
             return false;

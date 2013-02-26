@@ -4,15 +4,14 @@ import com.google.common.collect.ArrayListMultimap;
 import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
 import io.sunstrike.api.liquidenergy.multiblock.StructureType;
+import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.Settings;
 import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
-import io.sunstrike.mods.liquidenergy.multiblock.blocks.*;
-import net.minecraft.block.Block;
 import net.minecraftforge.common.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedList;
 
 /*
  * MultiblockDiscoveryHelper
@@ -49,15 +48,15 @@ public class MultiblockDiscoveryHelper {
      * Public method to attempt creation of a valid Multiblock structure
      *
      * @param location The position to start checking
-     * @param caller The block calling for the check (instance of a multiblock component)
+     * @param desc The descripter of the block calling for the check (multiblock component)
      * @return A MultiblockDescriptor of a complete structure or null if one could not be built
      */
-    public static MultiblockDescriptor discoverTransformerStructure(Position location, Block caller) {
-        if (caller instanceof BlockComponentTank) {
+    public static MultiblockDescriptor discoverTransformerStructure(Position location, ComponentDescriptor desc) {
+        if (desc == ComponentDescriptor.INTERNAL_TANK) {
             return __discoverTransformerFromTank(location);
-        } else if (caller instanceof BlockInputEU || caller instanceof BlockInputMJ || caller instanceof BlockInputFluid) {
+        } else if (ComponentDescriptor.isInputDescriptor(desc)) {
             return __discoverTransformerFromInput(location);
-        } else if (caller instanceof BlockOutputEU || caller instanceof BlockOutputMJ || caller instanceof BlockOutputFluid) {
+        } else if (ComponentDescriptor.isOutputDescriptor(desc)) {
             return __discoverTransformerFromOutput(location);
         } else {
             return null;
@@ -76,9 +75,9 @@ public class MultiblockDiscoveryHelper {
         for (ForgeDirection d : dirs) {
             Position toCheck = location.shiftInDirection(d);
             int bID = toCheck.world.getBlockId(toCheck.x, toCheck.y, toCheck.z);
-            if (bID != Settings.blockComponentTank) return null;
+            if (bID != Settings.blockComponentTank) continue;
             result = __discoverTransformerFromTank(toCheck);
-            if (result != null) break;
+            if (result != null) continue;
         }
 
         return result;
@@ -91,12 +90,12 @@ public class MultiblockDiscoveryHelper {
      */
     private static MultiblockDescriptor __discoverTransformerFromInput(Position location) {
         MultiblockDescriptor result = null;
-        for (int x = -1; x > 1; x++) {
-            for (int y = -1; y > 1; y++) {
-                for (int z = -1; z > 1; z++) {
+        for (int x = -1; x < 2; x++) {
+            for (int y = -1; y < 2; y++) {
+                for (int z = -1; z < 2; z++) {
                     if (location.world.getBlockId(location.x + x, location.y + y, location.z + z) == Settings.blockComponentTank) {
                         result = __discoverTransformerFromTank(new Position(location.x + x, location.y + y, location.z + z, location.world));
-                        if (result != null) break;
+                        if (result != null) continue;
                     }
                 }
             }
@@ -110,6 +109,8 @@ public class MultiblockDiscoveryHelper {
      * @return A MultiblockDescriptor of a complete structure or null if one could not be built
      */
     private static MultiblockDescriptor __discoverTransformerFromTank(Position posi) {
+        LiquidEnergy.logger.info("[MultiblockDiscoveryHelper] Beginning discovery...");
+
         ArrayListMultimap<ComponentDescriptor, Position> parts = ArrayListMultimap.create();
         parts.put(ComponentDescriptor.INTERNAL_TANK, posi);
         StructureType type = null;
@@ -165,20 +166,23 @@ public class MultiblockDiscoveryHelper {
         if (p.world.getBlockId(p.x, p.y, p.z) != Settings.blockStructure) return null;
         parts.put(ComponentDescriptor.STRUCTURE, p);
 
-        List<Position> structs = parts.get(ComponentDescriptor.STRUCTURE);
-        ArrayList<ComponentDescriptor> validInputs = new ArrayList<ComponentDescriptor>();
+        LinkedList<ComponentDescriptor> validInputs = new LinkedList<ComponentDescriptor>();
         if (type == StructureType.TRANSFORMER_LIQUIFIER) {
             // Liquifiers need power and fluid inputs
             validInputs.add(ComponentDescriptor.INPUT_FLUID);
             validInputs.add(ComponentDescriptor.INPUT_POWER_EU);
             validInputs.add(ComponentDescriptor.INPUT_POWER_MJ);
+            LiquidEnergy.logger.info("[MultiblockDiscoveryHelper] Got output; looking for a valid Liquifier.");
         } else if (type == StructureType.TRANSFORMER_GENERATOR) {
             validInputs.add(ComponentDescriptor.INPUT_FLUID);
             validInputs.add(ComponentDescriptor.STRUCTURE);
+            LiquidEnergy.logger.info("[MultiblockDiscoveryHelper] Got output; looking for a valid Generator.");
         } else {
+            LiquidEnergy.logger.warning("[MultiblockDiscoveryHelper] Invalid structure type! Aborting!");
             return null; // Invalid state
         }
 
+        ArrayList<Position> structs = new ArrayList(parts.get(ComponentDescriptor.STRUCTURE));
         for (Position structPos : structs) {
             // Check for the inputs
             Position potential = structPos.shiftInDirection(direction.getOpposite());
@@ -202,6 +206,7 @@ public class MultiblockDiscoveryHelper {
             }
         }
 
+        LiquidEnergy.logger.info("[MultiblockDiscoveryHelper] Constructed parts list of valid structure of type " + type + "; passing off to MultiblockDescriptor.");
         return new MultiblockDescriptor(parts, type);
     }
 

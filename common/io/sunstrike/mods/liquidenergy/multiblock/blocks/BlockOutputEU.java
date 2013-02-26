@@ -1,6 +1,5 @@
 package io.sunstrike.mods.liquidenergy.multiblock.blocks;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 
 /*
@@ -32,11 +31,10 @@ import net.minecraft.block.material.Material;
  *
  * @author Sunstrike <sunstrike@azurenode.net>
  */
-public class BlockOutputEU extends Block {
+public class BlockOutputEU extends BlockOutput {
 
     public BlockOutputEU(int id, int tex, Material mat) {
         super(id, tex, mat);
-        setHardness(5F);
     }
 
 }
