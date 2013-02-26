@@ -1,11 +1,11 @@
-package io.sunstrike.mods.liquidenergy.helpers;
+package io.sunstrike.api.liquidenergy;
 
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
 /*
  * Position
- * io.sunstrike.mods.liquidenergy.helpers
+ * io.sunstrike.api.liquidenergy
  * LiquidEnergy
  *
  * The MIT License (MIT)

@@ -1,10 +1,11 @@
 package io.sunstrike.mods.liquidenergy.helpers;
 
 import com.google.common.collect.ArrayListMultimap;
+import io.sunstrike.api.liquidenergy.Position;
+import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
+import io.sunstrike.api.liquidenergy.multiblock.StructureType;
 import io.sunstrike.mods.liquidenergy.configuration.Settings;
-import io.sunstrike.mods.liquidenergy.multiblock.ComponentDescriptor;
 import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
-import io.sunstrike.mods.liquidenergy.multiblock.StructureType;
 import io.sunstrike.mods.liquidenergy.multiblock.blocks.*;
 import net.minecraft.block.Block;
 import net.minecraftforge.common.ForgeDirection;

@@ -1,4 +1,4 @@
-package io.sunstrike.mods.liquidenergy.multiblock;
+package io.sunstrike.api.liquidenergy.multiblock;
 
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import io.sunstrike.mods.liquidenergy.configuration.Settings;
@@ -6,7 +6,7 @@ import net.minecraft.block.Block;
 
 /*
  * ComponentDescriptor
- * io.sunstrike.mods.liquidenergy.multiblock
+ * io.sunstrike.api.liquidenergy.multiblock
  * LiquidEnergy
  *
  * The MIT License (MIT)

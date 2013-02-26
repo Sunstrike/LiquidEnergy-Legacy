@@ -1,8 +1,8 @@
-package io.sunstrike.mods.liquidenergy.multiblock;
+package io.sunstrike.api.liquidenergy.multiblock;
 
 /*
  * StructureType
- * io.sunstrike.mods.liquidenergy.multiblock
+ * io.sunstrike.api.liquidenergy.multiblock
  * LiquidEnergy
  *
  * The MIT License (MIT)

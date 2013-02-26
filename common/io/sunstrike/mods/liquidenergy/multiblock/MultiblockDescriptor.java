@@ -1,7 +1,9 @@
 package io.sunstrike.mods.liquidenergy.multiblock;
 
 import com.google.common.collect.ArrayListMultimap;
-import io.sunstrike.mods.liquidenergy.helpers.Position;
+import io.sunstrike.api.liquidenergy.Position;
+import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
+import io.sunstrike.api.liquidenergy.multiblock.StructureType;
 
 import java.util.ArrayList;
 import java.util.Collection;
