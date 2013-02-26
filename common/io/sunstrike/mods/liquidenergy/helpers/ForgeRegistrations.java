@@ -113,7 +113,7 @@ public class ForgeRegistrations {
                 .setStepSound(Block.soundStoneFootstep)
                 .setBlockName("blockStructure")
                 .setCreativeTab(CreativeTabs.tabRedstone);
-        registerBlock(ModObjects.blockStructure, "blockStructure", "Transformer Structure", 1, ModRecipes.blockStructure);
+        registerBlock(ModObjects.blockStructure, "blockStructure", "Transformer Structure", 4, ModRecipes.blockStructure);
     }
 
     /**
