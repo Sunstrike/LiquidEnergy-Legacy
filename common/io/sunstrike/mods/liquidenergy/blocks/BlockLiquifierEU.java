@@ -34,6 +34,11 @@ import net.minecraft.world.World;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * MJ Liquifier block
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class BlockLiquifierEU extends Block {
 
 	public BlockLiquifierEU(int id, int tex, Material mat) {

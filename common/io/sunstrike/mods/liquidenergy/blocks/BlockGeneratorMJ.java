@@ -34,6 +34,11 @@ import net.minecraft.world.World;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * MJ Generator block
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class BlockGeneratorMJ extends Block {
 
 	public BlockGeneratorMJ(int id, int tex, Material mat) {

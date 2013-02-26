@@ -31,6 +31,8 @@ import net.minecraft.world.World;
 
 /**
  * Helper for finding and constructing multiblock instances
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
  */
 public class MultiblockDiscoveryHelper {
 

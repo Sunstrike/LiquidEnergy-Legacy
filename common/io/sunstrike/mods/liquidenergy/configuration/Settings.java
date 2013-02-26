@@ -26,6 +26,11 @@ import net.minecraftforge.common.Configuration;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Container for user settings, along with handling config loading
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class Settings {
 
 	// To change defaults, change these variables before compile

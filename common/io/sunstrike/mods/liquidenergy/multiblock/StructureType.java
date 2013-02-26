@@ -26,6 +26,8 @@ package io.sunstrike.mods.liquidenergy.multiblock;
 
 /**
  * Helper enum for communication between Multiblock objects
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
  */
 public enum StructureType {
 

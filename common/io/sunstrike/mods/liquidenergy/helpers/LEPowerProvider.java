@@ -27,6 +27,11 @@ import net.minecraftforge.common.ForgeDirection;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * BC Power Provider which backs the EU generators and liquifiers
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class LEPowerProvider extends PowerProvider {
 
     @Override

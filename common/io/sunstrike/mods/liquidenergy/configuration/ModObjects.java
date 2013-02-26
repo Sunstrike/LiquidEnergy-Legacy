@@ -27,6 +27,11 @@ import net.minecraft.item.Item;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Mod object container to store shared objects
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class ModObjects {
 
     // BLOCKS

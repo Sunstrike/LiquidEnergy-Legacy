@@ -24,6 +24,11 @@ package io.sunstrike.mods.liquidenergy;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Standard Forge proxy (server/common)
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class CommonProxy {
 	
 	public static final String ITEMS_PNG = "/liquidenergy/items.png";

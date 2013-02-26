@@ -27,6 +27,8 @@ package io.sunstrike.api.liquidenergy;
 /**
  * External access class to Liquid Energy objects (blocks, items etc). Returns may be nullable;
  * use != null checks or check specific method documentation.
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
  */
 public class LEObjects {
 

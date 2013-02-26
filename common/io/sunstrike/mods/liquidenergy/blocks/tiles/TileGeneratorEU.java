@@ -42,6 +42,11 @@ import net.minecraftforge.liquids.LiquidTank;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * EU Generator tile entity
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class TileGeneratorEU extends TileEntity implements IEnergySource, ITankContainer {
 	
 	// Internal buffers

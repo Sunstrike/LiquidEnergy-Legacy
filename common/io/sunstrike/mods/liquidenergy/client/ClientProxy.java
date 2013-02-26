@@ -30,6 +30,11 @@ import net.minecraftforge.client.MinecraftForgeClient;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Standard Forge proxy (client-only)
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class ClientProxy extends CommonProxy {
 	
 	@Override

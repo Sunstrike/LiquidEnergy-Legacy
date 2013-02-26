@@ -26,6 +26,13 @@ import net.minecraft.world.World;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Cleanroom Position class for storing coordinates in the world
+ * </p>
+ * This is a cleanroom implementation. The implementer has not seen Buildcraft's code.
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 // Note: This is a clean-room implementation.
 // I have not seen Buildcraft's Position class at time of writing.
 public class Position {

@@ -40,6 +40,11 @@ import net.minecraftforge.liquids.LiquidTank;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * MJ Generator tile entity
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class TileGeneratorMJ extends TileEntity implements ITankContainer, IPowerReceptor, IPipeConnection {
 
 	// Internal buffers

@@ -32,9 +32,11 @@ import net.minecraft.item.ItemStack;
 
 /**
  * Static control class for mod recipes.
- *
+ * </p>
  * Recipes only containing vanilla objects will be staticly defined from launch, other mod content must have the
  * corresponding initialiser called before use, to allow reflection and/or APIs to be called for setup.
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
  */
 public class ModRecipes {
 

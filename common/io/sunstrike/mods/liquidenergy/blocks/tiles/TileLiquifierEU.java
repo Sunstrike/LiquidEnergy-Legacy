@@ -41,6 +41,11 @@ import net.minecraftforge.liquids.LiquidTank;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * EU Liquifier tile entity
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class TileLiquifierEU extends TileEntity implements IEnergySink, ITankContainer {
 	
 	// Internal buffers

@@ -26,6 +26,8 @@ package io.sunstrike.api.liquidenergy;
 
 /**
  * External access class to Liquid Energy's conversions (EU/Nv, MJ/Nv, etc). All returns are not nullable.
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
  */
 public class PowerConversions {
 

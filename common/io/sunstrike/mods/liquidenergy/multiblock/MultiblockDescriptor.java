@@ -32,6 +32,11 @@ import java.util.Map;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * A class that describes an active multiblock structure
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class MultiblockDescriptor {
 
     public int x, y, z;

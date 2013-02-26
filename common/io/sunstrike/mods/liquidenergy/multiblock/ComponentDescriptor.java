@@ -26,6 +26,8 @@ package io.sunstrike.mods.liquidenergy.multiblock;
 
 /**
  * Possible parts of a multiblock structure
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
  */
 public enum ComponentDescriptor {
 

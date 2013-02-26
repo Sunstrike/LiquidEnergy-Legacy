@@ -44,6 +44,11 @@ import net.minecraftforge.common.MinecraftForge;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Static handler class for registering items and blocks with Minecraft Forge
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class ForgeRegistrations {
 
     // This should never be instantiated; all static!

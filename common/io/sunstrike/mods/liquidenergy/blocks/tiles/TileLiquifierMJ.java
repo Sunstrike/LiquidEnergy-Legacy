@@ -39,6 +39,11 @@ import net.minecraftforge.liquids.LiquidTank;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * MJ Liquifier tile entity
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class TileLiquifierMJ extends TileEntity implements ITankContainer, IPowerReceptor {
 
 	// Internal buffers

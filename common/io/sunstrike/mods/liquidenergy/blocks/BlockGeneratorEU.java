@@ -34,6 +34,11 @@ import net.minecraft.world.World;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * EU Generator block
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class BlockGeneratorEU extends Block {
 
 	public BlockGeneratorEU(int id, int tex, Material mat) {

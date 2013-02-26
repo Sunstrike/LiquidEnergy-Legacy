@@ -39,6 +39,11 @@ import java.util.logging.Logger;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Main mod class (handles startup)
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 @Mod(modid="LiquidEnergy", name="Liquid Energy", version="0.0.1", dependencies="after:IC2;after:BuildCraft|*")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false)
 public class LiquidEnergy {

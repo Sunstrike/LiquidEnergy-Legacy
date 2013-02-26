@@ -27,6 +27,11 @@ import net.minecraftforge.liquids.ILiquid;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 
+/**
+ * Implementation of Navitas as an item (not placable in world)
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class ItemLiquidNavitas extends Item implements ILiquid {
 	
 	public ItemLiquidNavitas(int id) {
