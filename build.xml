@@ -140,8 +140,41 @@
 
 	</target>
 
+    <target name="javadoc" depends="initialize-version">
+
+        <delete dir="${build.dir}/javadocs" />
+        <mkdir dir="${build.dir}/javadocs" />
+
+        <javadoc
+            private="true"
+            splitindex="true"
+            use="true"
+            author="true"
+            version="true"
+            destdir="${build.dir}/javadocs"
+            Windowtitle="Liquid Energy :: Javadoc"
+            classpath="${build.dir}/forge/mcp/lib/argo-2.25.jar;${build.dir}/forge/mcp/lib/asm-all-4.0.jar;${build.dir}/forge/mcp/lib/guava-12.0.1.jar;${build.dir}/forge/mcp/lib/asm-all-4.0-source.jar;${build.dir}/forge/mcp/lib/bcprov-jdk15on-147.jar;${build.dir}/forge/mcp/lib/guava-12.0.1-sources.jar;${build.dir}/forge/mcp/jars/bin/jinput.jar;${build.dir}/forge/mcp/jars/bin/lwjgl.jar;${build.dir}/forge/mcp/jars/bin/lwjgl_util.jar;${build.dir}/forge/mcp/jars/bin/minecraft.jar">
+            
+            <packageset dir="${src.dir}" defaultexcludes="yes">
+                <include name="io/sunstrike/**" />
+            </packageset>
+        </javadoc>
+
+        <zip
+            destfile="${jar.dir}/LiquidEnergyJavadoc-${le.version.full}.zip"
+            basedir="${build.dir}/javadocs"
+        />
+
+    </target>
+
+    <target name="packapi" depends="initialize-version">
+        <zip destfile="${jar.dir}/LiquidEnergyAPI-${le.version.full}.zip">
+            <fileset dir="${src.dir}" includes="io/sunstrike/api/**" />
+        </zip>
+    </target>
+
 	<!-- Package the compiled files -->
-	<target name="package" depends="clean,compile">
+	<target name="package" depends="clean,compile,javadoc,packapi">
 
 		<delete dir="${jar.dir}"/>
 		<mkdir dir="${jar.dir}"/>
