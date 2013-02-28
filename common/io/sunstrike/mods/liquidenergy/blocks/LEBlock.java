@@ -1,8 +1,17 @@
 package io.sunstrike.mods.liquidenergy.blocks;
 
+import io.sunstrike.api.liquidenergy.multiblock.Tile;
 import io.sunstrike.mods.liquidenergy.CommonProxy;
+import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileOutputFluid;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeDirection;
 
 /**
  * LEBlock
@@ -42,6 +51,26 @@ public class LEBlock extends Block {
     @Override
     public String getTextureFile() {
         return CommonProxy.BLOCK_PNG;
+    }
+
+    @Override
+    public int getBlockTexture(IBlockAccess blockAccess, int x, int y, int z, int side) {
+        TileEntity te = blockAccess.getBlockTileEntity(x, y, z);
+        if (!(te instanceof Tile)) return super.getBlockTexture(blockAccess, x, y, z, side);
+        return ((Tile)te).getTexture(ForgeDirection.getOrientation(side));
+    }
+
+    @Override
+    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
+        super.onBlockClicked(world, x, y, z, player);
+        if (world.isRemote) return;
+        ItemStack held = player.getCurrentEquippedItem();
+        if (held == null || held.getItem() != Item.stick) return;
+
+        TileEntity te = world.getBlockTileEntity(x, y, z);
+        if (!(te instanceof Tile)) return;
+
+        ((Tile)te).debugInfo(player);
     }
 
 }

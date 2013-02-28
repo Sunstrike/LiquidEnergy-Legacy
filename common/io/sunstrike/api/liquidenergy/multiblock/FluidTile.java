@@ -4,7 +4,7 @@ import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
 
 /*
- * IFluidTile
+ * FluidTile
  * io.sunstrike.api.liquidenergy.multiblock
  * LiquidEnergy
  *
@@ -28,35 +28,21 @@ import net.minecraftforge.liquids.LiquidStack;
  */
 
 /**
- * Interface to be implemented in all fluid blocks for IStructure structures.
+ * Abstract to be implemented in all fluid blocks for IStructure structures.
  * </p>
  * Fluid blocks must also implement ITankContainer but redirect these calls to the IStructure object, else do nothing
  * if no structure is attached (central tank handles fluids instead of the input tiles).
  *
  * @author Sunstrike <sunstrike@azurenode.net>
  */
-public interface IFluidTile extends ITankContainer {
-
-    /**
-     * Setter method for the structure this block is attached to
-     *
-     * @param structure IStructure object to attach to
-     */
-    public void setStructure(IStructure structure);
-
-    /**
-     * Getter method for the structure this block is attached to
-     *
-     * @return IStructure this is attached to
-     */
-    public IStructure getStructure();
+public abstract class FluidTile extends Tile implements ITankContainer {
 
     /**
      * Tell the caller if this can be used as an output
      *
      * @return True if can act as an output, else false.
      */
-    public boolean canDumpOut();
+    public abstract boolean canDumpOut();
 
     /**
      * Attempt to dump liquids out of this output (nullable)
@@ -65,6 +51,6 @@ public interface IFluidTile extends ITankContainer {
      * @param doFill Whether or not to commit the action
      * @return Amount dumped to an ITankContainer
      */
-    public int dump(LiquidStack resource, boolean doFill);
+    public abstract int dump(LiquidStack resource, boolean doFill);
 
 }

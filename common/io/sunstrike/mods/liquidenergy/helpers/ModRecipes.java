@@ -87,7 +87,7 @@ public class ModRecipes {
     /**
      * Call before using any IC2 item-including recipes (to grab items from IC2 API)
      */
-    public static void setupIC2Recipes() throws NullPointerException {
+    public static void setupIC2Recipes() throws ClassNotFoundException {
         ItemStack piston = new ItemStack(Block.pistonBase);
         ItemStack glass = new ItemStack(Block.thinGlass);
         ItemStack ironIngot = new ItemStack(Item.ingotIron);
@@ -96,7 +96,7 @@ public class ModRecipes {
         ItemStack batbox = Items.getItem("batBox");
         ItemStack lvTransformer = Items.getItem("lvTransformer");
 
-        if (fiberCable == null || batbox == null || lvTransformer == null) throw new NullPointerException();
+        if (fiberCable == null || batbox == null || lvTransformer == null) throw new ClassNotFoundException();
 
         /*
          * EU Liquifier
