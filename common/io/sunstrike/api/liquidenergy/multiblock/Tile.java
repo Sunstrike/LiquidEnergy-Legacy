@@ -1,8 +1,14 @@
 package io.sunstrike.api.liquidenergy.multiblock;
 
+import cpw.mods.fml.common.network.PacketDispatcher;
 import ic2.api.IWrenchable;
+import io.sunstrike.mods.liquidenergy.LiquidEnergy;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -90,6 +96,10 @@ public abstract class Tile extends TileEntity implements IWrenchable {
     @Override
     public void setFacing(short facing) {
         orientation = ForgeDirection.getOrientation((int)facing);
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setInteger("orientation", orientation.ordinal());
+        Packet132TileEntityData packet = new Packet132TileEntityData(xCoord, yCoord, zCoord, 0, nbt);
+        PacketDispatcher.sendPacketToAllAround(xCoord, yCoord, zCoord, 100, worldObj.getWorldInfo().getDimension(), packet);
     }
 
     @Override
@@ -111,11 +121,39 @@ public abstract class Tile extends TileEntity implements IWrenchable {
     @Override
     public abstract ItemStack getWrenchDrop(EntityPlayer entityPlayer);
 
+    /**
+     * Called by LEBlock instances to change textures on the fly (depending on orientation usually)
+     *
+     * @param side Direction being rendered
+     * @return Texture ID
+     */
     public int getTexture(ForgeDirection side) {
         return tex;
     }
 
+    /**
+     * Called when the player smacks a TE with a stick
+     *
+     * @param player The player smacking the TE
+     */
     public void debugInfo(EntityPlayer player) {
         // No debug info by default.
     }
+
+    /**
+     * TEs use this to synchronise orientation to the client.
+     *
+     * @param net The NetworkManager the packet originated from
+     * @param pkt The data packet
+     */
+    public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt) {
+        if (!(worldObj.isRemote)) return; // Client-only
+        LiquidEnergy.logger.info("Got pkt ID: " + pkt.actionType);
+        if (pkt.actionType == 0) {
+            int i = pkt.customParam1.getInteger("orientation");
+            orientation = ForgeDirection.getOrientation(i);
+            Minecraft.getMinecraft().renderGlobal.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+        }
+    }
+
 }

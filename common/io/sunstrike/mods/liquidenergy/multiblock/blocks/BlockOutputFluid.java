@@ -2,9 +2,6 @@ package io.sunstrike.mods.liquidenergy.multiblock.blocks;
 
 import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileOutputFluid;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -51,19 +48,6 @@ public class BlockOutputFluid extends BlockOutput {
     @Override
     public TileEntity createTileEntity(World world, int meta) {
         return new TileOutputFluid();
-    }
-
-    @Override
-    public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
-        super.onBlockClicked(world, x, y, z, player);
-        if (world.isRemote) return;
-        ItemStack held = player.getCurrentEquippedItem();
-        if (held == null || held.getItem() != Item.stick) return;
-
-        TileEntity te = world.getBlockTileEntity(x, y, z);
-        if (!(te instanceof TileOutputFluid)) return;
-
-        ((TileOutputFluid)te).debugInfo(player);
     }
 
 }

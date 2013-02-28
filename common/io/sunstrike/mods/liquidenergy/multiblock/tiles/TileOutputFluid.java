@@ -34,6 +34,8 @@ import net.minecraftforge.liquids.LiquidStack;
 
 /**
  * Fluid output TE for BlockOutputFluid
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
  */
 public class TileOutputFluid extends FluidTile {
 
@@ -92,9 +94,9 @@ public class TileOutputFluid extends FluidTile {
 
     @Override
     public int getTexture(ForgeDirection side) {
-        if (side == orientation) return 33; // Output
-        if (side == orientation.getOpposite()) return 35; // Input
-        return 34; // Side
+        if (side == orientation) return 32; // Output
+        if (side == orientation.getOpposite()) return 34; // Input
+        return 33; // Side
     }
 
 }

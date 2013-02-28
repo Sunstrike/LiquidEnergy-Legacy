@@ -2,7 +2,6 @@ package io.sunstrike.mods.liquidenergy.blocks;
 
 import io.sunstrike.api.liquidenergy.multiblock.Tile;
 import io.sunstrike.mods.liquidenergy.CommonProxy;
-import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileOutputFluid;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,6 +45,12 @@ public class LEBlock extends Block {
 
     public LEBlock(int id, int tex, Material mat) {
         super(id, tex, mat);
+        setHardness(5.0f);
+    }
+
+    @Override
+    public boolean isOpaqueCube() {
+        return true;
     }
 
     @Override
