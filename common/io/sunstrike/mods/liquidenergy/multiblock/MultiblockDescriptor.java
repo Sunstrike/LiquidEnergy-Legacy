@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
 import io.sunstrike.api.liquidenergy.multiblock.StructureType;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,6 +65,10 @@ public class MultiblockDescriptor {
         }
     }
 
+    public Collection<Position> getAllComponents() {
+        return parts.values();
+    }
+
     /**
      * Checks if the described structure is still complete and valid
      *
@@ -93,6 +98,15 @@ public class MultiblockDescriptor {
         }
 
         return true;
+    }
+
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+        // TODO: Stub method
+        return null;
+    }
+
+    public void readFromNBT(NBTTagCompound nbt) {
+        // TODO: Stub method
     }
 
 }

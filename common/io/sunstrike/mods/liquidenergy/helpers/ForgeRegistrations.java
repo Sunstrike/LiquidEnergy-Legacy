@@ -15,6 +15,7 @@ import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import io.sunstrike.mods.liquidenergy.configuration.Settings;
 import io.sunstrike.mods.liquidenergy.items.ItemLiquidNavitas;
 import io.sunstrike.mods.liquidenergy.multiblock.blocks.*;
+import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileInputFluid;
 import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileOutputFluid;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -93,7 +94,7 @@ public class ForgeRegistrations {
                 .setCreativeTab(CreativeTabs.tabRedstone);
         registerBlock(ModObjects.blockComponentTank, "blockComponentTank", "Transformer Tank", 1, ModRecipes.blockComponentTank);
 
-        //GameRegistry.registerTileEntity(TileInputFluid.class, "TileInputFluid");
+        GameRegistry.registerTileEntity(TileInputFluid.class, "TileInputFluid");
         ModObjects.blockInputFluid = new BlockInputFluid(Settings.blockInputFluid, 5, Material.iron)
                 .setStepSound(Block.soundMetalFootstep)
                 .setBlockName("blockInputFluid")

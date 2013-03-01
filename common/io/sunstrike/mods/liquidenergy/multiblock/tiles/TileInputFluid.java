@@ -9,7 +9,7 @@ import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.LiquidStack;
 
 /*
- * TileOutputFluid
+ * TileInputFluid
  * io.sunstrike.mods.liquidenergy.multiblock.tiles
  * LiquidEnergy
  *
@@ -31,21 +31,16 @@ import net.minecraftforge.liquids.LiquidStack;
  * 
  * @author Sunstrike <sunstrike@azurenode.net>
  */
-
-/**
- * Fluid output TE for BlockOutputFluid
- *
- * @author Sunstrike <sunstrike@azurenode.net>
- */
-public class TileOutputFluid extends FluidTile {
+public class TileInputFluid extends FluidTile {
 
     @Override
     public boolean canDumpOut() {
-        return true;
+        return false;
     }
 
     @Override
     public int dump(LiquidStack resource, boolean doFill) {
+        // TODO: Stub method
         return 0;
     }
 
@@ -61,11 +56,13 @@ public class TileOutputFluid extends FluidTile {
 
     @Override
     public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+        // TODO: Stub method
         return null;
     }
 
     @Override
     public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain) {
+        // TODO: Stub method
         return null;
     }
 
@@ -80,21 +77,21 @@ public class TileOutputFluid extends FluidTile {
     }
 
     @Override
-    public void debugInfo(EntityPlayer player) {
-        player.addChatMessage("[TileOutputFluid] Orientation: " + orientation);
-        if (structure == null) return;
-        player.addChatMessage("[TileOutputFluid] IStructure: " + structure);
-    }
-
-    @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
-        return new ItemStack(ModObjects.blockOutputFluid);
+        return new ItemStack(ModObjects.blockInputFluid);
     }
 
     @Override
     public int getTexture(ForgeDirection side) {
-        if (side == orientation) return 32; // Output
-        return 33; // Side
+        if (side == orientation) return 48; // Output
+        return 49; // Side
+    }
+
+    @Override
+    public void debugInfo(EntityPlayer player) {
+        player.addChatMessage("[TileOutputFluid] Orientation: " + orientation);
+        if (structure == null) return;
+        player.addChatMessage("[TileOutputFluid] IStructure: " + structure);
     }
 
 }

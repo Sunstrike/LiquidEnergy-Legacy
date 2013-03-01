@@ -68,7 +68,7 @@ public interface IStructure {
      * </p>
      * Call deregisterStructure() on each component to remove references and delete the structure.
      */
-    public void checkStructure();
+    public boolean checkStructure();
 
     /**
      * ITankContainer wrapper; see net.minecraftforge.liquids.ITankContainer (ForgeDirection from is handled in the
@@ -79,25 +79,6 @@ public interface IStructure {
      * @return Amount filled into internal tanks
      */
     public int fill(LiquidStack resource, boolean doFill);
-
-    /**
-     * ITankContainer wrapper; see net.minecraftforge.liquids.ITankContainer (ForgeDirection from is handled in the
-     * input/output TEs)
-     *
-     * @param maxDrain Maximum amount to drain
-     * @param doDrain Whether or not to commit the operation
-     * @return LiquidStack representing the liquid and amount actually drained
-     */
-    public LiquidStack drain(int maxDrain, boolean doDrain);
-
-    /**
-     * ITankContainer wrapper; see net.minecraftforge.liquids.ITankContainer (ForgeDirection from is handled in the
-     * input/output TEs)
-     *
-     * @param type Type of liquid to get tank for
-     * @return A tank or NULL for no such tank
-     */
-    public ILiquidTank getTank(LiquidStack type);
 
     /**
      * Restore state from NBT from save data

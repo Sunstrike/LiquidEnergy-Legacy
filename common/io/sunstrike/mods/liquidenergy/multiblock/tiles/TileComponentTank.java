@@ -1,15 +1,23 @@
 package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 
-import io.sunstrike.api.liquidenergy.multiblock.FluidTile;
+import io.sunstrike.api.liquidenergy.Position;
+import io.sunstrike.api.liquidenergy.multiblock.*;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
+import io.sunstrike.mods.liquidenergy.helpers.MultiblockDiscoveryHelper;
+import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquidTank;
+import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
 
+import java.util.Collection;
+
 /*
- * TileOutputFluid
+ * TileComponentTank
  * io.sunstrike.mods.liquidenergy.multiblock.tiles
  * LiquidEnergy
  *
@@ -33,68 +41,45 @@ import net.minecraftforge.liquids.LiquidStack;
  */
 
 /**
- * Fluid output TE for BlockOutputFluid
+ * Multiblock tank TE
  *
  * @author Sunstrike <sunstrike@azurenode.net>
  */
-public class TileOutputFluid extends FluidTile {
+public class TileComponentTank extends Tile implements IControlTile {
 
     @Override
-    public boolean canDumpOut() {
-        return true;
-    }
-
-    @Override
-    public int dump(LiquidStack resource, boolean doFill) {
-        return 0;
-    }
-
-    @Override
-    public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) {
-        return 0;
-    }
-
-    @Override
-    public int fill(int tankIndex, LiquidStack resource, boolean doFill) {
-        return 0;
-    }
-
-    @Override
-    public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain) {
-        return null;
-    }
-
-    @Override
-    public ILiquidTank[] getTanks(ForgeDirection direction) {
-        return new ILiquidTank[0];
-    }
-
-    @Override
-    public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) {
-        return null;
-    }
-
-    @Override
-    public void debugInfo(EntityPlayer player) {
-        player.addChatMessage("[TileOutputFluid] Orientation: " + orientation);
-        if (structure == null) return;
-        player.addChatMessage("[TileOutputFluid] IStructure: " + structure);
+    public void updateEntity() {
+        super.updateEntity();
+        if (structure != null) structure.update();
     }
 
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
-        return new ItemStack(ModObjects.blockOutputFluid);
+        return new ItemStack(ModObjects.blockComponentTank);
     }
 
     @Override
-    public int getTexture(ForgeDirection side) {
-        if (side == orientation) return 32; // Output
-        return 33; // Side
+    public boolean assembleStructure() {
+        MultiblockDescriptor desc = MultiblockDiscoveryHelper.discoverTransformerStructure(new Position(xCoord, yCoord, zCoord, worldObj), ComponentDescriptor.INTERNAL_TANK);
+        if (desc != null) {
+            structure = new StructureHandler(this, desc);
+        }
+        return false;
     }
 
+    @Override
+    public void invalidateStructure() {
+        MultiblockDescriptor desc = structure.getStructureDescriptor();
+        Collection<Position> parts = desc.getAllComponents();
+        for (Position p : parts) {
+            TileEntity te = worldObj.getBlockTileEntity(p.x, p.y, p.z);
+            if (te instanceof Tile) ((Tile) te).setStructure(null);
+        }
+    }
+
+    @Override
+    public World getWorld() {
+        // TODO: Stub method
+        return null;
+    }
 }
