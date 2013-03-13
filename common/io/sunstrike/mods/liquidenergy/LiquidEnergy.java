@@ -11,6 +11,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import io.sunstrike.mods.liquidenergy.configuration.Settings;
 import io.sunstrike.mods.liquidenergy.helpers.ForgeRegistrations;
+import io.sunstrike.mods.liquidenergy.helpers.PacketHandler;
 import net.minecraftforge.common.Configuration;
 
 import java.util.logging.Logger;
@@ -45,7 +46,7 @@ import java.util.logging.Logger;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 @Mod(modid="LiquidEnergy", name="Liquid Energy", version="0.0.1", dependencies="after:IC2;after:BuildCraft|*")
-@NetworkMod(clientSideRequired=true, serverSideRequired=false)
+@NetworkMod(clientSideRequired=true, serverSideRequired=false, channels = {"LE-Render"}, packetHandler = PacketHandler.class)
 public class LiquidEnergy {
 
 	@Instance("LiquidEnergy")

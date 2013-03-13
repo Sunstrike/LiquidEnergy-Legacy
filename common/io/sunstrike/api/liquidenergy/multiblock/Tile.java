@@ -1,10 +1,12 @@
 package io.sunstrike.api.liquidenergy.multiblock;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
 import ic2.api.IWrenchable;
 import io.sunstrike.api.liquidenergy.Position;
-import io.sunstrike.mods.liquidenergy.LiquidEnergy;
+import io.sunstrike.mods.liquidenergy.helpers.Packet250Helper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -16,6 +18,7 @@ import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
 /*
@@ -54,24 +57,18 @@ public abstract class Tile extends TileEntity implements IWrenchable {
     protected Position position;
 
     private boolean initialRenderDone = false;
+    private boolean failsafeTrip = false; // Used for 0, 0, 0 tiles (talk about edge cases...)
 
     protected int tex = 0;
 
-    public Tile() {
-        this.position = new Position(this.xCoord, this.yCoord, this.zCoord, this.worldObj);
-        //if (worldObj.isRemote) requestRenderUpdate(); // TODO: Sync state ASAP
+    @Override
+    public void setWorldObj(World par1World) {
+        super.setWorldObj(par1World);
+        if (worldObj.isRemote) requestRenderUpdate();
     }
 
-    /**
-     * Handle first-load render updates
-     */
-    @Override
-    public void updateEntity() {
-        if (!initialRenderDone) {
-            if (worldObj.isRemote) requestRenderUpdate();
-            initialRenderDone = true;
-        }
-        super.updateEntity();
+    public Tile() {
+        this.position = new Position(this.xCoord, this.yCoord, this.zCoord, this.worldObj);
     }
 
     public void updatePosition() {
@@ -103,6 +100,7 @@ public abstract class Tile extends TileEntity implements IWrenchable {
      */
     public void setOrientation(ForgeDirection direction) {
         this.orientation = direction;
+        sendRenderPacket();
     }
 
     /**
@@ -127,8 +125,7 @@ public abstract class Tile extends TileEntity implements IWrenchable {
 
     @Override
     public void setFacing(short facing) {
-        orientation = ForgeDirection.getOrientation((int)facing);
-        sendRenderPacket();
+        setOrientation(ForgeDirection.getOrientation((int) facing));
     }
 
     @Override
@@ -216,7 +213,7 @@ public abstract class Tile extends TileEntity implements IWrenchable {
     /**
      * Sends a rendering update packet to an area. Use to update orientation visually on all clients.
      */
-    private void sendRenderPacket() {
+    public void sendRenderPacket() {
         PacketDispatcher.sendPacketToAllAround(xCoord, yCoord, zCoord, 100, worldObj.getWorldInfo().getDimension(), constructServerPacket132());
     }
 
@@ -225,7 +222,7 @@ public abstract class Tile extends TileEntity implements IWrenchable {
      *
      * @param player Player to send packet to
      */
-    private void sendRenderPacket(EntityPlayerMP player) {
+    public void sendRenderPacket(EntityPlayerMP player) {
         PacketDispatcher.sendPacketToPlayer(constructServerPacket132(), (Player)player);
     }
 
@@ -241,22 +238,39 @@ public abstract class Tile extends TileEntity implements IWrenchable {
     }
 
     /**
-     * Helper method - constructs a Packet 132 for requesting a render update packet.
+     * Helper method - constructs a Packet 250 for requesting a render update packet.
      *
      * @return The packet to be sent
      */
     private Packet250CustomPayload constructClientUpdateRequestPacket() {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString("player", Minecraft.getMinecraft().session.username);
-        Packet250CustomPayload pkt = new Packet250CustomPayload();
+        String pName = Minecraft.getMinecraft().session.username;
+
+        Packet250CustomPayload pkt = Packet250Helper.constructLocationWithString(xCoord, yCoord, zCoord, worldObj.getWorldInfo().getDimension(), pName);
         pkt.channel = "LE-Render";
-        // FInish according to Forge wiki
+        return pkt;
+    }
+
+    @Override
+    public void updateEntity() {
+        super.updateEntity();
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT && !initialRenderDone) {
+            if (xCoord == 0 && yCoord == 0 && zCoord == 0) {
+                if (failsafeTrip) {
+                    requestRenderUpdate();
+                    initialRenderDone = true;
+                } else failsafeTrip = true; // Delay a bit.
+            } else {
+                requestRenderUpdate();
+                initialRenderDone = true;
+            }
+        }
     }
 
     /**
      * Client helper - constructs and sends a packet asking for new render data.
      */
     private void requestRenderUpdate() {
+        if (!worldObj.isRemote) return; // Client-only call
         PacketDispatcher.sendPacketToServer(constructClientUpdateRequestPacket());
     }
 
@@ -267,20 +281,20 @@ public abstract class Tile extends TileEntity implements IWrenchable {
      */
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        super.readFromNBT(nbt);
         orientation = ForgeDirection.getOrientation(nbt.getShort("orientationOrdinal"));
-        LiquidEnergy.logger.info("[Tile] Loaded with orientation " + orientation);
+        super.readFromNBT(nbt);
         updatePosition();
     }
 
     /**
      * Archiving state to NBT
-     * @param nbt
+     *
+     * @param nbt The NBT compound
      */
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
-        super.writeToNBT(nbt);
         nbt.setShort("orientationOrdinal", (short)orientation.ordinal());
+        super.writeToNBT(nbt);
     }
 
 }
