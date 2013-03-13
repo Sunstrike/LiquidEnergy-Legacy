@@ -2,6 +2,7 @@ package io.sunstrike.mods.liquidenergy.blocks;
 
 import io.sunstrike.api.liquidenergy.multiblock.Tile;
 import io.sunstrike.mods.liquidenergy.CommonProxy;
+import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
@@ -69,6 +70,7 @@ public class LEBlock extends Block {
     public void onBlockClicked(World world, int x, int y, int z, EntityPlayer player) {
         super.onBlockClicked(world, x, y, z, player);
         if (world.isRemote) return;
+
         ItemStack held = player.getCurrentEquippedItem();
         if (held == null || held.getItem() != Item.stick) return;
 

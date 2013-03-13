@@ -2,6 +2,7 @@ package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 
 import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.api.liquidenergy.multiblock.*;
+import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import io.sunstrike.mods.liquidenergy.helpers.MultiblockDiscoveryHelper;
 import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
@@ -10,9 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.ITankContainer;
-import net.minecraftforge.liquids.LiquidStack;
 
 import java.util.Collection;
 
@@ -59,16 +57,33 @@ public class TileComponentTank extends Tile implements IControlTile {
     }
 
     @Override
+    public void debugInfo(EntityPlayer player) {
+        // Attempt to make a structure
+        if (structure == null)
+            this.assembleStructure();
+        else
+            structure.checkStructure();
+        super.debugInfo(player);
+    }
+
+    @Override
     public boolean assembleStructure() {
         MultiblockDescriptor desc = MultiblockDiscoveryHelper.discoverTransformerStructure(new Position(xCoord, yCoord, zCoord, worldObj), ComponentDescriptor.INTERNAL_TANK);
         if (desc != null) {
             structure = new StructureHandler(this, desc);
+            Collection<Position> parts = desc.getAllComponents();
+            for (Position p : parts) {
+                TileEntity te = worldObj.getBlockTileEntity(p.x, p.y, p.z);
+                if (te instanceof Tile) ((Tile) te).setStructure(structure);
+            }
+            return true;
         }
         return false;
     }
 
     @Override
     public void invalidateStructure() {
+        LiquidEnergy.logger.info("Destroying structure " + structure);
         MultiblockDescriptor desc = structure.getStructureDescriptor();
         Collection<Position> parts = desc.getAllComponents();
         for (Position p : parts) {
@@ -79,7 +94,13 @@ public class TileComponentTank extends Tile implements IControlTile {
 
     @Override
     public World getWorld() {
-        // TODO: Stub method
-        return null;
+        return worldObj;
     }
+
+    @Override
+    public int getTexture(ForgeDirection side) {
+        if (side == orientation) return 64;
+        return 65;
+    }
+
 }

@@ -1,11 +1,16 @@
 package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 
+import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.api.liquidenergy.multiblock.FluidTile;
+import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquidTank;
+import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
 
 /*
@@ -46,6 +51,13 @@ public class TileOutputFluid extends FluidTile {
 
     @Override
     public int dump(LiquidStack resource, boolean doFill) {
+        Position shifted = position.shiftInDirection(orientation);
+        TileEntity te = worldObj.getBlockTileEntity(shifted.x, shifted.y, shifted.z);
+        if (te instanceof ITankContainer) {
+            // Attempt dump
+            LiquidEnergy.logger.info("Dumping " + resource);
+            return ((ITankContainer) te).fill(orientation.getOpposite(), resource, doFill);
+        }
         return 0;
     }
 
@@ -80,13 +92,6 @@ public class TileOutputFluid extends FluidTile {
     }
 
     @Override
-    public void debugInfo(EntityPlayer player) {
-        player.addChatMessage("[TileOutputFluid] Orientation: " + orientation);
-        if (structure == null) return;
-        player.addChatMessage("[TileOutputFluid] IStructure: " + structure);
-    }
-
-    @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
         return new ItemStack(ModObjects.blockOutputFluid);
     }
@@ -97,4 +102,15 @@ public class TileOutputFluid extends FluidTile {
         return 33; // Side
     }
 
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        orientation = ForgeDirection.getOrientation(nbt.getInteger("orientation"));
+        super.readFromNBT(nbt);
+    }
+
+    @Override
+    public void writeToNBT(NBTTagCompound nbt) {
+        nbt.setInteger("orientation", orientation.ordinal());
+        super.writeToNBT(nbt);
+    }
 }

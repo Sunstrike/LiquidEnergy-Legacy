@@ -1,6 +1,7 @@
 package io.sunstrike.api.liquidenergy.multiblock;
 
 import io.sunstrike.api.liquidenergy.Position;
+import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
 import net.minecraft.block.Block;
@@ -44,7 +45,7 @@ public class StructureHandler implements IStructure {
     private enum Phase { FILLING, CHARGING, DRAINING; }
 
     private ILiquidTank internalTank = new LiquidTank(8000);
-    private MultiblockDescriptor structure = null;
+    private MultiblockDescriptor structure;
     private IControlTile controller;
     private Phase currentPhase = Phase.FILLING;
     private int nvPowerBuffer = 0;
@@ -63,13 +64,18 @@ public class StructureHandler implements IStructure {
             ticks = 0;
         }
 
+        // DEBUG: Remove before push!
+        currentPhase = Phase.DRAINING;
+        internalTank.fill(new LiquidStack(ModObjects.itemLiquidNavitas, 8000), true);
+
         // Attempt to dump
         if (structure.type == StructureType.TRANSFORMER_LIQUIFIER && currentPhase == Phase.DRAINING) {
             Position tePos = structure.getComponent(ComponentDescriptor.OUTPUT_FLUID);
             TileEntity te = controller.getWorld().getBlockTileEntity(tePos.x, tePos.y, tePos.z);
             if (te instanceof FluidTile && ((FluidTile) te).canDumpOut()) {
                 int left = ((FluidTile)te).dump(internalTank.drain(10, false), false);
-                int toDrain = 10 - left;
+                int toDrain = left - 10;
+                if (toDrain > 10) toDrain = 10;
                 ((FluidTile)te).dump(internalTank.drain(toDrain, true), true);
             }
         }
@@ -87,11 +93,12 @@ public class StructureHandler implements IStructure {
 
     @Override
     public boolean checkStructure() {
+        if (structure == null) return false;
         return structure.isValid();
     }
 
     private boolean verifyState() {
-        if (structure == null || !(checkStructure())) {
+        if (!(checkStructure())) {
             breakStructure();
             return false;
         }
@@ -116,18 +123,32 @@ public class StructureHandler implements IStructure {
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        // TODO: Stub method
-
+        // TANK
+        NBTTagCompound tankNbt = nbt.getCompoundTag("tankLiquid");
+        LiquidStack li = LiquidStack.loadLiquidStackFromNBT(tankNbt);
+        if (li != null) internalTank.fill(li, true);
+        // STRUCTURE
+        NBTTagCompound structNbt = nbt.getCompoundTag("structure");
+        structure = MultiblockDescriptor.recreateFromNBT(structNbt);
+        // MISC. VARS
+        nvPowerBuffer = nbt.getInteger("nvPowerBuffer");
+        currentPhase = Phase.valueOf(nbt.getString("phase"));
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
-        // TODO: State saving done better
+        // TANK
         NBTTagCompound tankNbt = new NBTTagCompound();
         LiquidStack tankLi = internalTank.getLiquid();
         if (tankLi != null) tankNbt = tankLi.writeToNBT(tankNbt);
         nbt.setCompoundTag("tankLiquid", tankNbt);
-
+        // STRUCTURE
+        NBTTagCompound structNbt = new NBTTagCompound();
+        structure.writeToNBT(structNbt);
+        nbt.setCompoundTag("structure", structNbt);
+        // MISC. VARS
+        nbt.setInteger("nvPowerBuffer", nvPowerBuffer);
+        nbt.setString("phase", currentPhase.toString());
     }
 
     /**

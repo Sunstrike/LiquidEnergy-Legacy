@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
 import io.sunstrike.api.liquidenergy.multiblock.StructureType;
+import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.ArrayList;
@@ -77,24 +78,10 @@ public class MultiblockDescriptor {
     public boolean isValid() {
         boolean valid = true;
 
-        // We'll handle structure blocks seperately
-        Collection<Map.Entry<ComponentDescriptor, Position>> mapCopy = parts.entries();
-        ArrayList<Position> structBlocks = new ArrayList();
-        for (Map.Entry e : mapCopy) {
-            if (e.getKey() == ComponentDescriptor.STRUCTURE) {
-                mapCopy.remove(e);
-                structBlocks.add((Position)e.getValue());
+        for (Map.Entry<ComponentDescriptor, Position> p : parts.entries()) {
+            if (!(ComponentDescriptor.getDescriptorForBlockID(p.getValue().world.getBlockId(p.getValue().x, p.getValue().y, p.getValue().z)) == p.getKey())) {
+                return false;
             }
-        }
-
-        // Check TE'd blocks (non-structure)
-        for (Position p : parts.values()) {
-            if (!p.world.blockExists(p.x, p.y, p.z) || !p.world.blockHasTileEntity(p.x, p.y, p.z)) return false;
-        }
-
-        // Check structure blocks
-        for (Position p : parts.values()) {
-            if (!p.world.blockExists(p.x, p.y, p.z) || p.world.blockHasTileEntity(p.x, p.y, p.z)) return false;
         }
 
         return true;
@@ -105,8 +92,9 @@ public class MultiblockDescriptor {
         return null;
     }
 
-    public void readFromNBT(NBTTagCompound nbt) {
+    public static MultiblockDescriptor recreateFromNBT(NBTTagCompound nbt) {
         // TODO: Stub method
+        return null;
     }
 
 }

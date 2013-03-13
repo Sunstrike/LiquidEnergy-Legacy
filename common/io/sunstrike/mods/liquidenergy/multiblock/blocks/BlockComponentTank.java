@@ -1,7 +1,10 @@
 package io.sunstrike.mods.liquidenergy.multiblock.blocks;
 
 import io.sunstrike.mods.liquidenergy.blocks.LEBlock;
+import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileComponentTank;
 import net.minecraft.block.material.Material;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 /*
  * BlockComponentTank
@@ -37,6 +40,16 @@ public class BlockComponentTank extends LEBlock {
     public BlockComponentTank(int id, int tex, Material mat) {
         super(id, tex, mat);
         setHardness(5F);
+    }
+
+    @Override
+    public boolean hasTileEntity(int metadata) {
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(World world, int metadata) {
+        return new TileComponentTank();
     }
 
 }

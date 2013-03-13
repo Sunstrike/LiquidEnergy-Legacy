@@ -31,6 +31,12 @@ import net.minecraftforge.liquids.LiquidStack;
  * 
  * @author Sunstrike <sunstrike@azurenode.net>
  */
+
+/**
+ * Fluid Input tile entity
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
+ */
 public class TileInputFluid extends FluidTile {
 
     @Override
@@ -40,12 +46,13 @@ public class TileInputFluid extends FluidTile {
 
     @Override
     public int dump(LiquidStack resource, boolean doFill) {
-        // TODO: Stub method
         return 0;
     }
 
     @Override
     public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) {
+        if (structure == null) return 0;
+        if (from == orientation.getOpposite()) return structure.fill(resource, doFill);
         return 0;
     }
 
@@ -56,13 +63,11 @@ public class TileInputFluid extends FluidTile {
 
     @Override
     public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-        // TODO: Stub method
         return null;
     }
 
     @Override
     public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain) {
-        // TODO: Stub method
         return null;
     }
 
@@ -85,13 +90,6 @@ public class TileInputFluid extends FluidTile {
     public int getTexture(ForgeDirection side) {
         if (side == orientation) return 48; // Output
         return 49; // Side
-    }
-
-    @Override
-    public void debugInfo(EntityPlayer player) {
-        player.addChatMessage("[TileOutputFluid] Orientation: " + orientation);
-        if (structure == null) return;
-        player.addChatMessage("[TileOutputFluid] IStructure: " + structure);
     }
 
 }

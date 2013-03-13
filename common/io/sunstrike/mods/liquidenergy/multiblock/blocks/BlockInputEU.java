@@ -1,6 +1,9 @@
 package io.sunstrike.mods.liquidenergy.multiblock.blocks;
 
+import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileInputEU;
 import net.minecraft.block.material.Material;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 /*
  * BlockInputEU
@@ -35,6 +38,16 @@ public class BlockInputEU extends BlockInput {
 
     public BlockInputEU(int id, int tex, Material mat) {
         super(id, tex, mat);
+    }
+
+    @Override
+    public boolean hasTileEntity(int metadata) {
+        return true;
+    }
+
+    @Override
+    public TileEntity createTileEntity(World world, int metadata) {
+        return new TileInputEU();
     }
 
 }

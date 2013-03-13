@@ -1,16 +1,21 @@
 package io.sunstrike.api.liquidenergy.multiblock;
 
 import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 import ic2.api.IWrenchable;
+import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet132TileEntityData;
+import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
 /*
@@ -39,13 +44,39 @@ import net.minecraftforge.common.ForgeDirection;
 
 /**
  * Base TileEntity class for multiblocks
+ *
+ * @author Sunstrike <sunstrike@azurenode.net>
  */
 public abstract class Tile extends TileEntity implements IWrenchable {
 
     protected IStructure structure = null;
     protected ForgeDirection orientation = ForgeDirection.UP;
+    protected Position position;
+
+    private boolean initialRenderDone = false;
 
     protected int tex = 0;
+
+    public Tile() {
+        this.position = new Position(this.xCoord, this.yCoord, this.zCoord, this.worldObj);
+        //if (worldObj.isRemote) requestRenderUpdate(); // TODO: Sync state ASAP
+    }
+
+    /**
+     * Handle first-load render updates
+     */
+    @Override
+    public void updateEntity() {
+        if (!initialRenderDone) {
+            if (worldObj.isRemote) requestRenderUpdate();
+            initialRenderDone = true;
+        }
+        super.updateEntity();
+    }
+
+    public void updatePosition() {
+        position = new Position(xCoord, yCoord, zCoord, worldObj);
+    }
 
     /**
      * Setter method for the structure this block is attached to
@@ -97,10 +128,7 @@ public abstract class Tile extends TileEntity implements IWrenchable {
     @Override
     public void setFacing(short facing) {
         orientation = ForgeDirection.getOrientation((int)facing);
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setInteger("orientation", orientation.ordinal());
-        Packet132TileEntityData packet = new Packet132TileEntityData(xCoord, yCoord, zCoord, 0, nbt);
-        PacketDispatcher.sendPacketToAllAround(xCoord, yCoord, zCoord, 100, worldObj.getWorldInfo().getDimension(), packet);
+        sendRenderPacket();
     }
 
     @Override
@@ -138,7 +166,10 @@ public abstract class Tile extends TileEntity implements IWrenchable {
      * @param player The player smacking the TE
      */
     public void debugInfo(EntityPlayer player) {
-        // No debug info by default.
+        if (worldObj.isRemote || player.getCurrentEquippedItem() == null) return;
+        if (player.getCurrentEquippedItem().getItem() != Item.stick) return;
+        player.addChatMessage("[Tile] Orientation: " + orientation);
+        if (structure != null) player.addChatMessage("[Tile] IStructure: " + structure);
     }
 
     /**
@@ -148,13 +179,108 @@ public abstract class Tile extends TileEntity implements IWrenchable {
      * @param pkt The data packet
      */
     public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt) {
-        if (!(worldObj.isRemote)) return; // Client-only
-        LiquidEnergy.logger.info("Got pkt ID: " + pkt.actionType);
+        if (worldObj.isRemote) handleClientPacket(pkt); // Client
+        handleServerPacket(pkt);
+    }
+
+    /**
+     * Client-side handler for packets. Used for render-updates.
+     *
+     * @param pkt The data packet
+     */
+    private void handleClientPacket(Packet132TileEntityData pkt) {
         if (pkt.actionType == 0) {
             int i = pkt.customParam1.getInteger("orientation");
             orientation = ForgeDirection.getOrientation(i);
             Minecraft.getMinecraft().renderGlobal.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
         }
+    }
+
+    /**
+     * Server-side handler for packets. Used for render-update requests.
+     *
+     * @param pkt The data packet
+     */
+    private void handleServerPacket(Packet132TileEntityData pkt) {
+        if (pkt.actionType == 1) {
+            String pName = pkt.customParam1.getString("player");
+            EntityPlayerMP player = MinecraftServer.getServerConfigurationManager(MinecraftServer.getServer()).getPlayerForUsername(pName);
+            if (player != null) {
+                sendRenderPacket(player); // Send specific
+            } else {
+                sendRenderPacket(); // Fallback to global
+            }
+        }
+    }
+
+    /**
+     * Sends a rendering update packet to an area. Use to update orientation visually on all clients.
+     */
+    private void sendRenderPacket() {
+        PacketDispatcher.sendPacketToAllAround(xCoord, yCoord, zCoord, 100, worldObj.getWorldInfo().getDimension(), constructServerPacket132());
+    }
+
+    /**
+     * Sends a rendering update packet to a specific player. Use to update orientation visually on a specific client.
+     *
+     * @param player Player to send packet to
+     */
+    private void sendRenderPacket(EntityPlayerMP player) {
+        PacketDispatcher.sendPacketToPlayer(constructServerPacket132(), (Player)player);
+    }
+
+    /**
+     * Helper method - constructs a Packet 132 for orientation updates FROM the server.
+     *
+     * @return The packet to be sent
+     */
+    private Packet132TileEntityData constructServerPacket132() {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setInteger("orientation", orientation.ordinal());
+        return new Packet132TileEntityData(xCoord, yCoord, zCoord, 0, nbt);
+    }
+
+    /**
+     * Helper method - constructs a Packet 132 for requesting a render update packet.
+     *
+     * @return The packet to be sent
+     */
+    private Packet250CustomPayload constructClientUpdateRequestPacket() {
+        NBTTagCompound nbt = new NBTTagCompound();
+        nbt.setString("player", Minecraft.getMinecraft().session.username);
+        Packet250CustomPayload pkt = new Packet250CustomPayload();
+        pkt.channel = "LE-Render";
+        // FInish according to Forge wiki
+    }
+
+    /**
+     * Client helper - constructs and sends a packet asking for new render data.
+     */
+    private void requestRenderUpdate() {
+        PacketDispatcher.sendPacketToServer(constructClientUpdateRequestPacket());
+    }
+
+    /**
+     * Reloading state from NBT, needs to update Position variable.
+     *
+     * @param nbt The NBT compound
+     */
+    @Override
+    public void readFromNBT(NBTTagCompound nbt) {
+        super.readFromNBT(nbt);
+        orientation = ForgeDirection.getOrientation(nbt.getShort("orientationOrdinal"));
+        LiquidEnergy.logger.info("[Tile] Loaded with orientation " + orientation);
+        updatePosition();
+    }
+
+    /**
+     * Archiving state to NBT
+     * @param nbt
+     */
+    @Override
+    public void writeToNBT(NBTTagCompound nbt) {
+        super.writeToNBT(nbt);
+        nbt.setShort("orientationOrdinal", (short)orientation.ordinal());
     }
 
 }
