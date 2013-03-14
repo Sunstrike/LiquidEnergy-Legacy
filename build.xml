@@ -23,7 +23,7 @@
 	<available property="forge-exists" file="${download.dir}/${forge.name}"/>
 
     <condition property="bamboo-build">
-        <isset property="env.BAMBOO_REPOSITORY_GIT_BRANCH"/>
+        <isset property="bamboo.branch"/>
     </condition>
 	<condition property="out-of-date">
 		<not>
@@ -45,7 +45,7 @@
 
     <!-- If this is a Bamboo build, add branch -->
     <target name="git-branch-bamboo" if="bamboo-build">
-        <property name="build.branch" value="-${env.BAMBOO_REPOSITORY_GIT_BRANCH}"/>
+        <property name="build.branch" value="-${bamboo.branch}"/>
     </target>
     <target name="no-git-branch" unless="bamboo-build">
         <property name="build.branch" value=""/>
