@@ -22,6 +22,9 @@
 
 	<available property="forge-exists" file="${download.dir}/${forge.name}"/>
 
+    <condition property="bamboo-build">
+        <isset property="env.BAMBOO_REPOSITORY_GIT_BRANCH"/>
+    </condition>
 	<condition property="out-of-date">
 		<not>
 			<and>
@@ -40,14 +43,22 @@
 		<delete dir="${build.dir}"/>
 	</target>
 
+    <!-- If this is a Bamboo build, add branch -->
+    <target name="git-branch-bamboo" if="bamboo-build">
+        <property name="build.branch" value="-${env.BAMBOO_REPOSITORY_GIT_BRANCH}"/>
+    </target>
+    <target name="no-git-branch" unless="bamboo-build">
+        <property name="build.branch" value=""/>
+    </target>
+
 	<!-- Set full version -->
-	<target name="initialize-version">
+	<target name="initialize-version" depends="git-branch-bamboo,no-git-branch">
         <exec executable="git" outputproperty="build.number">
             <arg value="rev-parse" />
             <arg value="--short" />
             <arg value="HEAD" />
         </exec>
-		<property name="le.version.full" value="${le.version}-${build.number}"/>
+		<property name="le.version.full" value="${le.version}-${build.number}${build.branch}"/>
 		<echo message="Starting build for ${le.version.full}"/>
 	</target>
 
