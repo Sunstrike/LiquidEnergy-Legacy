@@ -1,5 +1,6 @@
 package io.sunstrike.api.liquidenergy.multiblock;
 
+import io.sunstrike.api.liquidenergy.Position;
 import net.minecraft.world.World;
 
 /*
@@ -51,4 +52,11 @@ public interface IControlTile {
      * @return The world
      */
     World getWorld();
+
+    /**
+     * Return the position of this TE
+     *
+     * @return A position
+     */
+    Position getPosition();
 }

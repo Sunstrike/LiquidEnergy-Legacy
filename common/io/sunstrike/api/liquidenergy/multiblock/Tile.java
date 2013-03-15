@@ -81,6 +81,7 @@ public abstract class Tile extends TileEntity implements IWrenchable {
      * @param structure IStructure object to attach to
      */
     public void setStructure(IStructure structure) {
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord); // For connecting to pipes etc. on fluids/power connectors
         this.structure = structure;
     }
 
@@ -100,6 +101,8 @@ public abstract class Tile extends TileEntity implements IWrenchable {
      */
     public void setOrientation(ForgeDirection direction) {
         this.orientation = direction;
+        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
         sendRenderPacket();
     }
 
@@ -189,7 +192,9 @@ public abstract class Tile extends TileEntity implements IWrenchable {
         if (pkt.actionType == 0) {
             int i = pkt.customParam1.getInteger("orientation");
             orientation = ForgeDirection.getOrientation(i);
-            Minecraft.getMinecraft().renderGlobal.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
         }
     }
 

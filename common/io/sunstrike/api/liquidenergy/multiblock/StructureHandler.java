@@ -3,13 +3,21 @@ package io.sunstrike.api.liquidenergy.multiblock;
 import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
+import io.sunstrike.mods.liquidenergy.configuration.Settings;
+import io.sunstrike.mods.liquidenergy.helpers.MultiblockDiscoveryHelper;
 import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
+import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileInputEU;
+import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileOutputEU;
+import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileOutputFluid;
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
+
+import java.util.Random;
 
 /*
  * StructureHandler
@@ -50,10 +58,35 @@ public class StructureHandler implements IStructure {
     private Phase currentPhase = Phase.FILLING;
     private int nvPowerBuffer = 0;
     private int ticks = 0;
+    private Random random = new Random();
 
     public StructureHandler(IControlTile controller, MultiblockDescriptor structure) {
         this.controller = controller;
         this.structure = structure;
+    }
+
+    @Override
+    public ILiquidTank getTank(LiquidStack type, ComponentDescriptor part) {
+        if (structure.type == StructureType.TRANSFORMER_LIQUIFIER) {
+            if (type.containsLiquid(new LiquidStack(Block.waterStill, 1)) && part == ComponentDescriptor.INPUT_FLUID) return internalTank;
+            if (type.containsLiquid(new LiquidStack(ModObjects.itemLiquidNavitas, 1)) && part == ComponentDescriptor.OUTPUT_FLUID) return internalTank;
+        } else {
+            if (type.containsLiquid(new LiquidStack(ModObjects.itemLiquidNavitas, 1)) && part == ComponentDescriptor.OUTPUT_FLUID) return internalTank;
+        }
+        return null;
+    }
+
+    @Override
+    public ILiquidTank[] getTanks(ComponentDescriptor part) {
+        return new ILiquidTank[]{internalTank};
+    }
+
+    @Override
+    public void debugInfo(EntityPlayer player) {
+        if (internalTank.getLiquid() != null) {
+            player.addChatMessage("[StructureHandler] Tank liquid: " + internalTank.getLiquid().asItemStack());
+            player.addChatMessage("[StructureHandler] Tank level: " + internalTank.getLiquid().amount);
+        } else player.addChatMessage("[StructureHandler] No liquid in tank.");
     }
 
     public void update() {
@@ -64,10 +97,6 @@ public class StructureHandler implements IStructure {
             ticks = 0;
         }
 
-        // DEBUG: Remove before push!
-        currentPhase = Phase.DRAINING;
-        internalTank.fill(new LiquidStack(ModObjects.itemLiquidNavitas, 8000), true);
-
         // Attempt to dump
         if (structure.type == StructureType.TRANSFORMER_LIQUIFIER && currentPhase == Phase.DRAINING) {
             Position tePos = structure.getComponent(ComponentDescriptor.OUTPUT_FLUID);
@@ -77,6 +106,12 @@ public class StructureHandler implements IStructure {
                 int toDrain = left - 10;
                 if (toDrain > 10) toDrain = 10;
                 ((FluidTile)te).dump(internalTank.drain(toDrain, true), true);
+            }
+        } else if (structure.type == StructureType.TRANSFORMER_GENERATOR && currentPhase == Phase.DRAINING) {
+            Position tePos = structure.getComponent(ComponentDescriptor.OUTPUT_POWER_EU);
+            TileEntity te = controller.getWorld().getBlockTileEntity(tePos.x, tePos.y, tePos.z);
+            if (te instanceof TileOutputEU) {
+                nvPowerBuffer = ((TileOutputEU)te).emitEnergy(nvPowerBuffer);
             }
         }
     }
@@ -127,12 +162,13 @@ public class StructureHandler implements IStructure {
         NBTTagCompound tankNbt = nbt.getCompoundTag("tankLiquid");
         LiquidStack li = LiquidStack.loadLiquidStackFromNBT(tankNbt);
         if (li != null) internalTank.fill(li, true);
-        // STRUCTURE
-        NBTTagCompound structNbt = nbt.getCompoundTag("structure");
-        structure = MultiblockDescriptor.recreateFromNBT(structNbt);
+        // STRUCTURE (runtime regen)
+        structure = MultiblockDiscoveryHelper.discoverTransformerStructure(controller.getPosition(), ComponentDescriptor.INTERNAL_TANK);
         // MISC. VARS
         nvPowerBuffer = nbt.getInteger("nvPowerBuffer");
         currentPhase = Phase.valueOf(nbt.getString("phase"));
+
+        verifyState();
     }
 
     @Override
@@ -142,13 +178,25 @@ public class StructureHandler implements IStructure {
         LiquidStack tankLi = internalTank.getLiquid();
         if (tankLi != null) tankNbt = tankLi.writeToNBT(tankNbt);
         nbt.setCompoundTag("tankLiquid", tankNbt);
-        // STRUCTURE
-        NBTTagCompound structNbt = new NBTTagCompound();
-        structure.writeToNBT(structNbt);
-        nbt.setCompoundTag("structure", structNbt);
         // MISC. VARS
         nbt.setInteger("nvPowerBuffer", nvPowerBuffer);
         nbt.setString("phase", currentPhase.toString());
+    }
+
+    @Override
+    public int demandsEU() {
+        if (currentPhase != Phase.CHARGING) return 0;
+        return (8000 - nvPowerBuffer)*Settings.euPerNv; // Atleast LV
+    }
+
+    @Override
+    public int receiveEU(int input) {
+        if (currentPhase != Phase.CHARGING) return input;
+        // TODO: make this configurable.
+        if (random.nextInt(50) == 1) { // 1-in-50
+            input -= random.nextInt(input/8); // Up to an eighth loss
+        }
+        return Settings.euPerNv*chargeNv(input/Settings.euPerNv);
     }
 
     /**

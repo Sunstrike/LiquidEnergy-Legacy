@@ -1,6 +1,8 @@
 package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 
+import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
 import io.sunstrike.api.liquidenergy.multiblock.FluidTile;
+import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -52,13 +54,14 @@ public class TileInputFluid extends FluidTile {
     @Override
     public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) {
         if (structure == null) return 0;
-        if (from == orientation.getOpposite()) return structure.fill(resource, doFill);
+        if (from == orientation) return structure.fill(resource, doFill); // Because this API is weird.
         return 0;
     }
 
     @Override
     public int fill(int tankIndex, LiquidStack resource, boolean doFill) {
-        return 0;
+        if (structure == null) return 0;
+        return structure.fill(resource, doFill);
     }
 
     @Override
@@ -73,12 +76,14 @@ public class TileInputFluid extends FluidTile {
 
     @Override
     public ILiquidTank[] getTanks(ForgeDirection direction) {
-        return new ILiquidTank[0];
+        if (structure == null) return new ILiquidTank[0];
+        return structure.getTanks(ComponentDescriptor.INPUT_FLUID);
     }
 
     @Override
     public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) {
-        return null;
+        if (structure == null) return null;
+        return structure.getTank(type, ComponentDescriptor.INPUT_FLUID);
     }
 
     @Override

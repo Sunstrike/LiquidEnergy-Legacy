@@ -1,6 +1,7 @@
 package io.sunstrike.api.liquidenergy.multiblock;
 
 import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.LiquidStack;
@@ -81,6 +82,25 @@ public interface IStructure {
     public int fill(LiquidStack resource, boolean doFill);
 
     /**
+     * ITankContainer wrapper; see net.minecraftforge.liquids.ITankContainer (ForgeDirection from is handled in the
+     * input/output TEs)
+     *
+     * @param type LiquidStack representing the liquid type
+     * @param part Descriptor for the component
+     * @return Tank for this type (or null)
+     */
+    public ILiquidTank getTank(LiquidStack type, ComponentDescriptor part);
+
+    /**
+     * ITankContainer wrapper; see net.minecraftforge.liquids.ITankContainer (ForgeDirection from is handled in the
+     * input/output TEs)
+     *
+     * @param part Descriptor for calling component
+     * @return Array of tanks
+     */
+    public ILiquidTank[] getTanks(ComponentDescriptor part);
+
+    /**
      * Restore state from NBT from save data
      *
      * @param nbt NBT tag compound to write from
@@ -94,4 +114,25 @@ public interface IStructure {
      */
     public void writeToNBT(NBTTagCompound nbt);
 
+    /**
+     * IC2 - Amount of EU wanted by the structure.
+     *
+     * @return EU wanted
+     */
+    int demandsEU();
+
+    /**
+     * IC2 - Receive EU from inputs
+     *
+     * @param input EU to add to the system
+     * @return EU remaining after use
+     */
+    int receiveEU(int input);
+
+    /**
+     * Send debug information to player
+     *
+     * @param player Player to send debug to
+     */
+    void debugInfo(EntityPlayer player);
 }

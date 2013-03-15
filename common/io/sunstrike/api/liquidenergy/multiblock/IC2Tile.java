@@ -36,6 +36,7 @@ import net.minecraftforge.common.MinecraftForge;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 public abstract class IC2Tile extends Tile implements IEnergyTile {
+// Sorry IC2 guys, IEnergyTile was all that'd work here despite being an internal API
 
     private boolean hasAddedToENet = false;
 

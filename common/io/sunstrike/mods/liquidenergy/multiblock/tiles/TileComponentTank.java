@@ -57,6 +57,11 @@ public class TileComponentTank extends Tile implements IControlTile {
     }
 
     @Override
+    public Position getPosition() {
+        return position;
+    }
+
+    @Override
     public void debugInfo(EntityPlayer player) {
         // Attempt to make a structure
         if (structure == null)
@@ -64,6 +69,7 @@ public class TileComponentTank extends Tile implements IControlTile {
         else
             structure.checkStructure();
         super.debugInfo(player);
+        if (structure != null) structure.debugInfo(player);
     }
 
     @Override

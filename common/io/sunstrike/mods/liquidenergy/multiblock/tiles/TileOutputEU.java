@@ -1,15 +1,17 @@
 package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 
 import ic2.api.Direction;
-import ic2.api.energy.tile.IEnergySink;
+import ic2.api.energy.event.EnergyTileSourceEvent;
+import ic2.api.energy.tile.IEnergySource;
 import io.sunstrike.api.liquidenergy.multiblock.IC2Tile;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.MinecraftForge;
 
 /*
- * TileInputEU
+ * TileOutputEU
  * io.sunstrike.mods.liquidenergy.multiblock.tiles
  * LiquidEnergy
  *
@@ -33,11 +35,11 @@ import net.minecraft.tileentity.TileEntity;
  */
 
 /**
- * Input tile for Multiblocks - EU
+ * Output tile for Multiblocks - EU
  *
  * @author Sunstrike <sunstrike@azurenode.net>
  */
-public class TileInputEU extends IC2Tile implements IEnergySink {
+public class TileOutputEU extends IC2Tile implements IEnergySource {
 
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
@@ -45,24 +47,33 @@ public class TileInputEU extends IC2Tile implements IEnergySink {
     }
 
     @Override
-    public int demandsEnergy() {
-        if (structure == null) return 0;
-        return structure.demandsEU();
+    public int getMaxEnergyOutput() {
+        return 32;
     }
 
     @Override
-    public int injectEnergy(Direction directionFrom, int amount) {
-        if (directionFrom.toForgeDirection() != orientation.getOpposite() || structure == null) return amount;
-        return structure.receiveEU(amount);
+    public boolean emitsEnergyTo(TileEntity receiver, Direction direction) {
+        if (direction.toForgeDirection() == orientation.getOpposite()) return true;
+        return false;
     }
 
-    @Override
-    public int getMaxSafeInput() {
-        return 32; // LV for now
+    /**
+     * Emits power to the IC2 ENet
+     *
+     * @param power Power to try and dispatch
+     * @return Power left over
+     */
+    public int emitEnergy(int power) {
+        int excess = power - 32;
+        if (excess <= 0) excess = 0;
+        if (power >= 32) { // LV machine
+            // We need to keep a handle to the event so we can get how much is actually consumed
+            EnergyTileSourceEvent evt = new EnergyTileSourceEvent(this, 32);
+            MinecraftForge.EVENT_BUS.post(evt);
+            // Adjust buffer depending on amount actually emitted (evt.amount = 0 where all energy consumed by ENet)
+            power -= 32 - evt.amount;
+        }
+        return excess + power;
     }
 
-    @Override
-    public boolean acceptsEnergyFrom(TileEntity emitter, Direction direction) {
-        return (direction.toForgeDirection() == orientation.getOpposite());
-    }
 }
