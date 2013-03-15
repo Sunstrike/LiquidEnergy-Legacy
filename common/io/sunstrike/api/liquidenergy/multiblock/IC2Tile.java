@@ -42,6 +42,7 @@ public abstract class IC2Tile extends Tile implements IEnergyTile {
 
     @Override
     public void updateEntity() {
+        super.updateEntity();
         // IC2 initialisation
         if (!worldObj.isRemote) {
             if (!hasAddedToENet) {

@@ -3,6 +3,8 @@ package io.sunstrike.api.liquidenergy;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
+import java.lang.ref.WeakReference;
+
 /*
  * Position
  * io.sunstrike.api.liquidenergy
@@ -39,17 +41,18 @@ import net.minecraftforge.common.ForgeDirection;
 public class Position {
 
     public int x, y, z;
-    public World world;
+    private WeakReference<World> world;
 
     public Position(int x, int y, int z, World world) {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.world = world;
+        this.world = new WeakReference<World>(world);
     }
 
     public Position shiftInDirection(ForgeDirection dir) {
-        Position p = new Position(x, y, z, world);
+        if (world.get() == null) return null;
+        Position p = new Position(x, y, z, world.get());
         switch (dir) {
             case UP:
                 p.y++;
@@ -73,6 +76,10 @@ public class Position {
                 break;
         }
         return p;
+    }
+
+    public World getWorld() {
+        return world.get();
     }
 
 }

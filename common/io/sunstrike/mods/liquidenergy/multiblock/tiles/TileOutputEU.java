@@ -8,6 +8,7 @@ import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 
 /*
@@ -44,6 +45,12 @@ public class TileOutputEU extends IC2Tile implements IEnergySource {
     @Override
     public ItemStack getWrenchDrop(EntityPlayer entityPlayer) {
         return new ItemStack(ModObjects.blockInputEU);
+    }
+
+    @Override
+    public int getTexture(ForgeDirection side) {
+        if (side == orientation) return 96; // Input
+        return 97; // Side
     }
 
     @Override

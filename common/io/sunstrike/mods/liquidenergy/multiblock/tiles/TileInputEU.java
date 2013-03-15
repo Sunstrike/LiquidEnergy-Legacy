@@ -3,10 +3,12 @@ package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 import ic2.api.Direction;
 import ic2.api.energy.tile.IEnergySink;
 import io.sunstrike.api.liquidenergy.multiblock.IC2Tile;
+import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.common.ForgeDirection;
 
 /*
  * TileInputEU
@@ -45,13 +47,22 @@ public class TileInputEU extends IC2Tile implements IEnergySink {
     }
 
     @Override
+    public int getTexture(ForgeDirection side) {
+        if (side == orientation) return 80; // Input
+        return 81; // Side
+    }
+
+    @Override
     public int demandsEnergy() {
         if (structure == null) return 0;
-        return structure.demandsEU();
+        int demands = structure.demandsEU();
+        if (demands > 32) demands = 32;
+        return demands;
     }
 
     @Override
     public int injectEnergy(Direction directionFrom, int amount) {
+        LiquidEnergy.logger.info("[TileInputEU] Injection from: " + directionFrom.toForgeDirection() + " (orient:"+orientation+"), amount: " + amount);
         if (directionFrom.toForgeDirection() != orientation.getOpposite() || structure == null) return amount;
         return structure.receiveEU(amount);
     }

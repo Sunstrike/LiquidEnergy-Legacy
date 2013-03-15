@@ -1,14 +1,10 @@
 package io.sunstrike.api.liquidenergy.multiblock;
 
 import io.sunstrike.api.liquidenergy.Position;
-import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import io.sunstrike.mods.liquidenergy.configuration.Settings;
-import io.sunstrike.mods.liquidenergy.helpers.MultiblockDiscoveryHelper;
 import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
-import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileInputEU;
 import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileOutputEU;
-import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileOutputFluid;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -83,6 +79,8 @@ public class StructureHandler implements IStructure {
 
     @Override
     public void debugInfo(EntityPlayer player) {
+        player.addChatMessage("[StructureHandler] Phase: " + currentPhase);
+        player.addChatMessage("[StructureHandler] Nv pBuffer: " + nvPowerBuffer);
         if (internalTank.getLiquid() != null) {
             player.addChatMessage("[StructureHandler] Tank liquid: " + internalTank.getLiquid().asItemStack());
             player.addChatMessage("[StructureHandler] Tank level: " + internalTank.getLiquid().amount);
@@ -102,10 +100,10 @@ public class StructureHandler implements IStructure {
             Position tePos = structure.getComponent(ComponentDescriptor.OUTPUT_FLUID);
             TileEntity te = controller.getWorld().getBlockTileEntity(tePos.x, tePos.y, tePos.z);
             if (te instanceof FluidTile && ((FluidTile) te).canDumpOut()) {
-                int left = ((FluidTile)te).dump(internalTank.drain(10, false), false);
-                int toDrain = left - 10;
-                if (toDrain > 10) toDrain = 10;
-                ((FluidTile)te).dump(internalTank.drain(toDrain, true), true);
+                LiquidStack drainable = internalTank.drain(10, false);
+                if (drainable != null) {
+                    ((FluidTile) te).dump(internalTank.drain(drainable.amount, true), true);
+                }
             }
         } else if (structure.type == StructureType.TRANSFORMER_GENERATOR && currentPhase == Phase.DRAINING) {
             Position tePos = structure.getComponent(ComponentDescriptor.OUTPUT_POWER_EU);
@@ -114,6 +112,8 @@ public class StructureHandler implements IStructure {
                 nvPowerBuffer = ((TileOutputEU)te).emitEnergy(nvPowerBuffer);
             }
         }
+
+        if (currentPhase == Phase.DRAINING && internalTank.getLiquid() == null) currentPhase = Phase.FILLING;
     }
 
     @Override
@@ -162,11 +162,9 @@ public class StructureHandler implements IStructure {
         NBTTagCompound tankNbt = nbt.getCompoundTag("tankLiquid");
         LiquidStack li = LiquidStack.loadLiquidStackFromNBT(tankNbt);
         if (li != null) internalTank.fill(li, true);
-        // STRUCTURE (runtime regen)
-        structure = MultiblockDiscoveryHelper.discoverTransformerStructure(controller.getPosition(), ComponentDescriptor.INTERNAL_TANK);
         // MISC. VARS
         nvPowerBuffer = nbt.getInteger("nvPowerBuffer");
-        currentPhase = Phase.valueOf(nbt.getString("phase"));
+        if (nbt.getString("phase") != "" && nbt.getString("phase") != null) currentPhase = Phase.valueOf(nbt.getString("phase"));
 
         verifyState();
     }
@@ -186,17 +184,22 @@ public class StructureHandler implements IStructure {
     @Override
     public int demandsEU() {
         if (currentPhase != Phase.CHARGING) return 0;
-        return (8000 - nvPowerBuffer)*Settings.euPerNv; // Atleast LV
+        return (8000 - nvPowerBuffer)*Settings.euPerNv;
     }
 
     @Override
     public int receiveEU(int input) {
         if (currentPhase != Phase.CHARGING) return input;
+        int spare = 0;
+        if (input > 32) {
+            spare = input - 32;
+            input = 32;
+        }
         // TODO: make this configurable.
         if (random.nextInt(50) == 1) { // 1-in-50
             input -= random.nextInt(input/8); // Up to an eighth loss
         }
-        return Settings.euPerNv*chargeNv(input/Settings.euPerNv);
+        return Settings.euPerNv*chargeNv(input/Settings.euPerNv) + spare;
     }
 
     /**
@@ -213,7 +216,9 @@ public class StructureHandler implements IStructure {
             internalTank.fill(new LiquidStack(ModObjects.itemLiquidNavitas, 8000), true);
             currentPhase = Phase.DRAINING;
             // Left over power
-            return nvPowerBuffer - 8000;
+            int leftovers = nvPowerBuffer - 8000;
+            nvPowerBuffer = 0;
+            return leftovers;
         }
         return 0;
     }

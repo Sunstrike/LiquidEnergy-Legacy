@@ -4,9 +4,9 @@ import com.google.common.collect.ArrayListMultimap;
 import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
 import io.sunstrike.api.liquidenergy.multiblock.StructureType;
-import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.Settings;
 import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
 import java.util.ArrayList;
@@ -74,7 +74,9 @@ public class MultiblockDiscoveryHelper {
         MultiblockDescriptor result = null;
         for (ForgeDirection d : dirs) {
             Position toCheck = location.shiftInDirection(d);
-            int bID = toCheck.world.getBlockId(toCheck.x, toCheck.y, toCheck.z);
+            World world = toCheck.getWorld();
+            if (world == null) return null;
+            int bID = world.getBlockId(toCheck.x, toCheck.y, toCheck.z);
             if (bID != Settings.blockComponentTank) continue;
             result = __discoverTransformerFromTank(toCheck);
             if (result != null) continue;
@@ -93,8 +95,10 @@ public class MultiblockDiscoveryHelper {
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 for (int z = -1; z < 2; z++) {
-                    if (location.world.getBlockId(location.x + x, location.y + y, location.z + z) == Settings.blockComponentTank) {
-                        result = __discoverTransformerFromTank(new Position(location.x + x, location.y + y, location.z + z, location.world));
+                    World world = location.getWorld();
+                    if (world == null) continue;
+                    if (world.getBlockId(location.x + x, location.y + y, location.z + z) == Settings.blockComponentTank) {
+                        result = __discoverTransformerFromTank(new Position(location.x + x, location.y + y, location.z + z, world));
                         if (result != null) continue;
                     }
                 }
@@ -109,8 +113,6 @@ public class MultiblockDiscoveryHelper {
      * @return A MultiblockDescriptor of a complete structure or null if one could not be built
      */
     private static MultiblockDescriptor __discoverTransformerFromTank(Position posi) {
-        LiquidEnergy.logger.info("[MultiblockDiscoveryHelper] Beginning discovery...");
-
         ArrayListMultimap<ComponentDescriptor, Position> parts = ArrayListMultimap.create();
         parts.put(ComponentDescriptor.INTERNAL_TANK, posi);
         StructureType type = null;
@@ -120,7 +122,7 @@ public class MultiblockDiscoveryHelper {
         for (ForgeDirection dir : ForgeDirection.values()) {
             Position shifted = posi.shiftInDirection(dir);
 
-            int bID = shifted.world.getBlockId(shifted.x, shifted.y, shifted.z);
+            int bID = shifted.getWorld().getBlockId(shifted.x, shifted.y, shifted.z);
             if (bID == Settings.blockOutputEU) {
                 parts.put(ComponentDescriptor.OUTPUT_POWER_EU, shifted);
                 type = StructureType.TRANSFORMER_GENERATOR;
@@ -151,7 +153,9 @@ public class MultiblockDiscoveryHelper {
         for (ForgeDirection dir : dirs) {
             Position shifted = posi.shiftInDirection(dir);
 
-            int bID = shifted.world.getBlockId(shifted.x, shifted.y, shifted.z);
+            World world = shifted.getWorld();
+            if (world == null) return null;
+            int bID = world.getBlockId(shifted.x, shifted.y, shifted.z);
             if (bID == Settings.blockStructure) {
                 parts.put(ComponentDescriptor.STRUCTURE, shifted);
                 struc1 = dir;
@@ -163,7 +167,9 @@ public class MultiblockDiscoveryHelper {
         if (struc1 == null) return null;
 
         Position p = posi.shiftInDirection(struc1.getOpposite());
-        if (p.world.getBlockId(p.x, p.y, p.z) != Settings.blockStructure) return null;
+        World world = p.getWorld();
+        if (world == null) return null;
+        if (world.getBlockId(p.x, p.y, p.z) != Settings.blockStructure) return null;
         parts.put(ComponentDescriptor.STRUCTURE, p);
 
         LinkedList<ComponentDescriptor> validInputs = new LinkedList<ComponentDescriptor>();
@@ -172,13 +178,10 @@ public class MultiblockDiscoveryHelper {
             validInputs.add(ComponentDescriptor.INPUT_FLUID);
             validInputs.add(ComponentDescriptor.INPUT_POWER_EU);
             validInputs.add(ComponentDescriptor.INPUT_POWER_MJ);
-            LiquidEnergy.logger.info("[MultiblockDiscoveryHelper] Got output; looking for a valid Liquifier.");
         } else if (type == StructureType.TRANSFORMER_GENERATOR) {
             validInputs.add(ComponentDescriptor.INPUT_FLUID);
             validInputs.add(ComponentDescriptor.STRUCTURE);
-            LiquidEnergy.logger.info("[MultiblockDiscoveryHelper] Got output; looking for a valid Generator.");
         } else {
-            LiquidEnergy.logger.warning("[MultiblockDiscoveryHelper] Invalid structure type! Aborting!");
             return null; // Invalid state
         }
 
@@ -186,7 +189,9 @@ public class MultiblockDiscoveryHelper {
         for (Position structPos : structs) {
             // Check for the inputs
             Position potential = structPos.shiftInDirection(direction.getOpposite());
-            int bID = potential.world.getBlockId(potential.x, potential.y, potential.z);
+            World w = potential.getWorld();
+            if (w == null) return null;
+            int bID = w.getBlockId(potential.x, potential.y, potential.z);
             ComponentDescriptor desc = ComponentDescriptor.getDescriptorForBlockID(bID);
             if (desc == null || !validInputs.contains(desc)) return null;
             parts.put(desc, potential);
@@ -206,7 +211,6 @@ public class MultiblockDiscoveryHelper {
             }
         }
 
-        LiquidEnergy.logger.info("[MultiblockDiscoveryHelper] Constructed parts list of valid structure of type " + type + "; passing off to MultiblockDescriptor.");
         return new MultiblockDescriptor(parts, type);
     }
 

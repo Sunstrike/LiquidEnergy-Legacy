@@ -4,10 +4,8 @@ import com.google.common.collect.ArrayListMultimap;
 import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
 import io.sunstrike.api.liquidenergy.multiblock.StructureType;
-import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import net.minecraft.nbt.NBTTagCompound;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +77,7 @@ public class MultiblockDescriptor {
         boolean valid = true;
 
         for (Map.Entry<ComponentDescriptor, Position> p : parts.entries()) {
-            if (!(ComponentDescriptor.getDescriptorForBlockID(p.getValue().world.getBlockId(p.getValue().x, p.getValue().y, p.getValue().z)) == p.getKey())) {
+            if (!(ComponentDescriptor.getDescriptorForBlockID(p.getValue().getWorld().getBlockId(p.getValue().x, p.getValue().y, p.getValue().z)) == p.getKey())) {
                 return false;
             }
         }

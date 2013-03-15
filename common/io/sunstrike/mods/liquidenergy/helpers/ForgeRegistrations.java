@@ -15,10 +15,7 @@ import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import io.sunstrike.mods.liquidenergy.configuration.Settings;
 import io.sunstrike.mods.liquidenergy.items.ItemLiquidNavitas;
 import io.sunstrike.mods.liquidenergy.multiblock.blocks.*;
-import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileComponentTank;
-import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileInputEU;
-import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileInputFluid;
-import io.sunstrike.mods.liquidenergy.multiblock.tiles.TileOutputFluid;
+import io.sunstrike.mods.liquidenergy.multiblock.tiles.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -151,7 +148,7 @@ public class ForgeRegistrations {
                     .setCreativeTab(CreativeTabs.tabRedstone);
             registerBlock(ModObjects.blockInputEU, "blockInputEU", "EU Input", 1, ModRecipes.blockInputEU);
 
-            //GameRegistry.registerTileEntity(TileOutputEU.class, "TileOutputEU");
+            GameRegistry.registerTileEntity(TileOutputEU.class, "TileOutputEU");
             ModObjects.blockOutputEU = new BlockOutputEU(Settings.blockOutputEU, 9, Material.iron)
                     .setStepSound(Block.soundMetalFootstep)
                     .setBlockName("blockOutputEU")

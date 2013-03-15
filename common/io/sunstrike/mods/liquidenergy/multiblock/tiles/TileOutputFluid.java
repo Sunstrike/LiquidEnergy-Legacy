@@ -1,8 +1,8 @@
 package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 
 import io.sunstrike.api.liquidenergy.Position;
+import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
 import io.sunstrike.api.liquidenergy.multiblock.FluidTile;
-import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -51,11 +51,11 @@ public class TileOutputFluid extends FluidTile {
 
     @Override
     public int dump(LiquidStack resource, boolean doFill) {
+        updatePosition();
         Position shifted = position.shiftInDirection(orientation);
         TileEntity te = worldObj.getBlockTileEntity(shifted.x, shifted.y, shifted.z);
         if (te instanceof ITankContainer) {
             // Attempt dump
-            LiquidEnergy.logger.info("Dumping " + resource);
             return ((ITankContainer) te).fill(orientation.getOpposite(), resource, doFill);
         }
         return 0;
@@ -83,11 +83,13 @@ public class TileOutputFluid extends FluidTile {
 
     @Override
     public ILiquidTank[] getTanks(ForgeDirection direction) {
+        if (structure != null) return structure.getTanks(ComponentDescriptor.OUTPUT_FLUID);
         return new ILiquidTank[0];
     }
 
     @Override
     public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) {
+        if (structure != null) return structure.getTank(type, ComponentDescriptor.OUTPUT_FLUID);
         return null;
     }
 

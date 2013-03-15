@@ -56,8 +56,8 @@ public abstract class Tile extends TileEntity implements IWrenchable {
     protected ForgeDirection orientation = ForgeDirection.UP;
     protected Position position;
 
-    private boolean initialRenderDone = false;
-    private boolean failsafeTrip = false; // Used for 0, 0, 0 tiles (talk about edge cases...)
+    protected boolean initialRenderDone = false;
+    protected boolean failsafeTrip = false; // Used for 0, 0, 0 tiles (talk about edge cases...)
 
     protected int tex = 0;
 
@@ -192,7 +192,6 @@ public abstract class Tile extends TileEntity implements IWrenchable {
         if (pkt.actionType == 0) {
             int i = pkt.customParam1.getInteger("orientation");
             orientation = ForgeDirection.getOrientation(i);
-            worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
         }
