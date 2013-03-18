@@ -2,6 +2,8 @@ package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 
 import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
+import io.sunstrike.api.liquidenergy.multiblock.FluidTile;
+import io.sunstrike.api.liquidenergy.multiblock.StructureType;
 import io.sunstrike.api.liquidenergy.multiblock.Tile;
 import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
@@ -13,6 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquidTank;
+import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 
 import java.util.Collection;
@@ -55,6 +58,7 @@ public class TileComponentTank extends Tile {
     private MultiblockDescriptor structure;
     private Phase phase = Phase.FILLING;
     private ILiquidTank tank = new LiquidTank(4000); // 4 buckets at a time
+    private int nvPowerBuffer = 0;
     private int ticks = 0;
 
     @Override
@@ -126,38 +130,92 @@ public class TileComponentTank extends Tile {
     private void structureUpdate() {
         if (structure == null) return;
         // Hand off to phase-specific handlers
-        switch(phase) {
-            case FILLING:
-                phaseFilling();
-                break;
-            case CHARGING:
-                phaseCharging();
-                break;
-            case DRAINING:
-                phaseDraining();
-                break;
+        if (structure.type == StructureType.TRANSFORMER_LIQUIFIER) {
+            switch(phase) {
+                case FILLING:
+                    phaseFillingLiquifier();
+                    break;
+                case CHARGING:
+                    phaseChargingLiquifier();
+                    break;
+                case DRAINING:
+                    phaseDrainingLiquifier();
+                    break;
+            }
+        } else { // TRANSFORMER_GENERATOR
+            switch(phase) {
+                case FILLING:
+                    phaseFillingGenerator();
+                    break;
+                case CHARGING:
+                    phaseChargingGenerator();
+                    break;
+                case DRAINING:
+                    phaseDrainingGenerator();
+                    break;
+            }
         }
     }
 
     /**
-     * Phase - Filling handler
+     * Phase - Filling handler (Liquifier)
      */
-    private void phaseFilling() {
-        // TODO: Structure fill
+    private void phaseFillingLiquifier() {
+        LiquidStack li = tank.getLiquid();
+        if (li != null && li.amount >= tank.getCapacity()) phase = Phase.CHARGING;
     }
 
     /**
-     * Phase - Charging handler
+     * Phase - Charging handler (Liquifier)
      */
-    private void phaseCharging() {
-        // TODO: Structure charge
+    private void phaseChargingLiquifier() {
+        if (nvPowerBuffer >= tank.getCapacity()) {
+            phase = Phase.DRAINING;
+            nvPowerBuffer = 0;
+            // Convert tank
+            tank = new LiquidTank(4000);
+            tank.fill(new LiquidStack(ModObjects.itemLiquidNavitas, 4000), true);
+        }
     }
 
     /**
-     * Phase - Draining handler
+     * Phase - Draining handler (Liquifier)
      */
-    private void phaseDraining() {
-        // TODO: Structure drain
+    private void phaseDrainingLiquifier() {
+        Position outPos = structure.getComponent(ComponentDescriptor.OUTPUT_FLUID);
+        TileEntity ft = worldObj.getBlockTileEntity(outPos.x, outPos.y, outPos.z);
+        if (ft instanceof FluidTile && ((FluidTile) ft).canDumpOut()) {
+            int dumped = ((FluidTile) ft).dump(tank.drain(4, true), true);
+            int ret = 4 - dumped;
+            if (ret != 0) tank.fill(new LiquidStack(ModObjects.itemLiquidNavitas, ret), true);
+        }
+
+        if (tank.getLiquid() == null) {
+            phase = Phase.FILLING;
+            // Reset tank
+            tank = new LiquidTank(4000);
+        }
+    }
+
+    /**
+     * Phase - Filling handler (Generator)
+     */
+    private void phaseFillingGenerator() {
+        // TODO: Implement
+    }
+
+    /**
+     * Phase - Charging handler (Generator)
+     */
+    private void phaseChargingGenerator() {
+        // TODO: Implement
+    }
+
+    /**
+     * Phase - Draining handler (Generator)
+     */
+    private void phaseDrainingGenerator() {
+        // TODO: Implement
     }
 
     @Override
