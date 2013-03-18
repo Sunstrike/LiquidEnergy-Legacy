@@ -53,7 +53,7 @@ import net.minecraftforge.common.ForgeDirection;
 public abstract class Tile extends TileEntity implements IWrenchable {
 
     protected ForgeDirection orientation = ForgeDirection.UP;
-    protected Position position;
+    protected Tile controller;
 
     protected boolean initialRenderDone = false;
     protected boolean failsafeTrip = false; // Used for 0, 0, 0 tiles (talk about edge cases...)
@@ -64,14 +64,6 @@ public abstract class Tile extends TileEntity implements IWrenchable {
     public void setWorldObj(World par1World) {
         super.setWorldObj(par1World);
         if (worldObj.isRemote) requestRenderUpdate();
-    }
-
-    public Tile() {
-        this.position = new Position(this.xCoord, this.yCoord, this.zCoord, this.worldObj);
-    }
-
-    public void updatePosition() {
-        position = new Position(xCoord, yCoord, zCoord, worldObj);
     }
 
     /**
@@ -93,6 +85,24 @@ public abstract class Tile extends TileEntity implements IWrenchable {
      */
     public ForgeDirection getOrientation() {
         return orientation;
+    }
+
+    /**
+     * Sets the structure controller for this tile.
+     *
+     * @param tile The new controller (or null for structure destruction)
+     */
+    public void setController(Tile tile) {
+        this.controller = tile;
+    }
+
+    /**
+     * Helper to get an up to date Position object for this tile.
+     *
+     * @return A Position object for this tile.
+     */
+    public Position getPosition() {
+        return new Position(xCoord, yCoord, zCoord, worldObj);
     }
 
     @Override
@@ -240,7 +250,7 @@ public abstract class Tile extends TileEntity implements IWrenchable {
     }
 
     /**
-     * Reloading state from NBT, needs to update Position variable.
+     * Reloading state from NBT
      *
      * @param nbt The NBT compound
      */
@@ -248,7 +258,6 @@ public abstract class Tile extends TileEntity implements IWrenchable {
     public void readFromNBT(NBTTagCompound nbt) {
         orientation = ForgeDirection.getOrientation(nbt.getShort("orientationOrdinal"));
         super.readFromNBT(nbt);
-        updatePosition();
     }
 
     /**

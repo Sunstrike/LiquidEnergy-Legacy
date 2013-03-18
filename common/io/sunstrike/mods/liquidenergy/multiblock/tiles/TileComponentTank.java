@@ -1,14 +1,19 @@
 package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 
+import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
 import io.sunstrike.api.liquidenergy.multiblock.Tile;
+import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import io.sunstrike.mods.liquidenergy.helpers.MultiblockDiscoveryHelper;
 import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+
+import java.util.Collection;
 
 /*
  * TileComponentTank
@@ -37,12 +42,13 @@ import net.minecraftforge.common.ForgeDirection;
 /**
  * Multiblock tank TE
  * </p>
- * Also acts as root controller for a structure
+ * Acts as root controller for a structure
  *
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 public class TileComponentTank extends Tile {
 
+    private MultiblockDescriptor structure;
     private int ticks = 0;
 
     @Override
@@ -50,15 +56,22 @@ public class TileComponentTank extends Tile {
         super.updateEntity();
         ticks++;
         if (ticks >= 200) {
-            // TODO: Structure updates
-            /*
             if (structure == null)
                 assembleStructure();
             else
-                structure.checkStructure();
-            */
+                checkStructure();
             ticks = 0;
         }
+        if (structure != null) structureUpdate(); // Update structure
+    }
+
+    private boolean checkStructure() {
+        boolean valid = structure.isValid();
+        if (!valid) {
+            invalidateStructure();
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -73,23 +86,25 @@ public class TileComponentTank extends Tile {
     }
 
     private boolean assembleStructure() {
-        updatePosition();
-        MultiblockDescriptor desc = MultiblockDiscoveryHelper.discoverTransformerStructure(position, ComponentDescriptor.INTERNAL_TANK);
-        // TODO: Enable as structure
+        structure = MultiblockDiscoveryHelper.discoverTransformerStructure(getPosition(), ComponentDescriptor.INTERNAL_TANK);
+        if (structure != null) return true;
         return false;
     }
 
     private void invalidateStructure() {
-        // TODO: Break structure
-        /*
         LiquidEnergy.logger.info("[TileComponentTank] Destroying structure " + structure);
-        MultiblockDescriptor desc = structure.getStructureDescriptor();
-        Collection<Position> parts = desc.getAllComponents();
+        Collection<Position> parts = structure.getAllComponents();
         for (Position p : parts) {
             TileEntity te = worldObj.getBlockTileEntity(p.x, p.y, p.z);
-            if (te instanceof Tile) ((Tile) te).setStructure(null);
+            if (te instanceof Tile) ((Tile) te).setController(null);
         }
-        */
+    }
+
+    /**
+     * Entity update handler for the whole structure (called in updateEntity())
+     */
+    private void structureUpdate() {
+        // TODO: Update whole structure
     }
 
     @Override

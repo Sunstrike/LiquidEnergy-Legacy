@@ -51,8 +51,7 @@ public class TileOutputFluid extends FluidTile {
 
     @Override
     public int dump(LiquidStack resource, boolean doFill) {
-        updatePosition();
-        Position shifted = position.shiftInDirection(orientation);
+        Position shifted = (new Position(xCoord, yCoord, zCoord, worldObj)).shiftInDirection(orientation);
         TileEntity te = worldObj.getBlockTileEntity(shifted.x, shifted.y, shifted.z);
         if (te instanceof ITankContainer) {
             // Attempt dump

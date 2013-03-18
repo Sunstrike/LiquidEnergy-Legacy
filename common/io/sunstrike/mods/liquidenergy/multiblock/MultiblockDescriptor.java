@@ -74,8 +74,6 @@ public class MultiblockDescriptor {
      * @return True if structure is valid.
      */
     public boolean isValid() {
-        boolean valid = true;
-
         for (Map.Entry<ComponentDescriptor, Position> p : parts.entries()) {
             if (!(ComponentDescriptor.getDescriptorForBlockID(p.getValue().getWorld().getBlockId(p.getValue().x, p.getValue().y, p.getValue().z)) == p.getKey())) {
                 return false;
