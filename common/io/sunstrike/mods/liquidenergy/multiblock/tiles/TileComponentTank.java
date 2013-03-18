@@ -202,6 +202,7 @@ public class TileComponentTank extends Tile {
      */
     private void phaseFillingGenerator() {
         // TODO: Implement
+        LiquidEnergy.logger.severe("[TileComponentTank] Generator phase FILLING not implemented!");
     }
 
     /**
@@ -209,6 +210,7 @@ public class TileComponentTank extends Tile {
      */
     private void phaseChargingGenerator() {
         // TODO: Implement
+        LiquidEnergy.logger.severe("[TileComponentTank] Generator phase CHARGING not implemented!");
     }
 
     /**
@@ -216,6 +218,7 @@ public class TileComponentTank extends Tile {
      */
     private void phaseDrainingGenerator() {
         // TODO: Implement
+        LiquidEnergy.logger.severe("[TileComponentTank] Generator phase DRAINING not implemented!");
     }
 
     @Override
