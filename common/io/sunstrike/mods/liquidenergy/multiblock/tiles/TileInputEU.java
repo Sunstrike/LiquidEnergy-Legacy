@@ -54,22 +54,19 @@ public class TileInputEU extends IC2Tile implements IEnergySink {
 
     @Override
     public int demandsEnergy() {
-        if (structure == null) return 0;
-        int demands = structure.demandsEU();
-        if (demands > 32) demands = 32;
-        return demands;
+        // TODO: Implement
+        return 0;
     }
 
     @Override
     public int injectEnergy(Direction directionFrom, int amount) {
-        LiquidEnergy.logger.info("[TileInputEU] Injection from: " + directionFrom.toForgeDirection() + " (orient:"+orientation+"), amount: " + amount);
-        if (directionFrom.toForgeDirection() != orientation.getOpposite() || structure == null) return amount;
-        return structure.receiveEU(amount);
+        // TODO; Implement
+        return amount;
     }
 
     @Override
     public int getMaxSafeInput() {
-        return 32; // LV for now
+        return 32; // TODO: Make configurable
     }
 
     @Override

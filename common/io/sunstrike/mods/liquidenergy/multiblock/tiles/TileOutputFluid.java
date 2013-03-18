@@ -83,13 +83,13 @@ public class TileOutputFluid extends FluidTile {
 
     @Override
     public ILiquidTank[] getTanks(ForgeDirection direction) {
-        if (structure != null) return structure.getTanks(ComponentDescriptor.OUTPUT_FLUID);
+        // TODO: Implement
         return new ILiquidTank[0];
     }
 
     @Override
     public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) {
-        if (structure != null) return structure.getTank(type, ComponentDescriptor.OUTPUT_FLUID);
+        // TODO: Implement
         return null;
     }
 
@@ -104,15 +104,4 @@ public class TileOutputFluid extends FluidTile {
         return 33; // Side
     }
 
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) {
-        orientation = ForgeDirection.getOrientation(nbt.getInteger("orientation"));
-        super.readFromNBT(nbt);
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound nbt) {
-        nbt.setInteger("orientation", orientation.ordinal());
-        super.writeToNBT(nbt);
-    }
 }

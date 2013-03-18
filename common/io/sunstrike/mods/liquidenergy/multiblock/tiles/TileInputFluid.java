@@ -53,15 +53,14 @@ public class TileInputFluid extends FluidTile {
 
     @Override
     public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) {
-        if (structure == null) return 0;
-        if (from == orientation) return structure.fill(resource, doFill); // Because this API is weird.
+        // TODO: Implement
         return 0;
     }
 
     @Override
     public int fill(int tankIndex, LiquidStack resource, boolean doFill) {
-        if (structure == null) return 0;
-        return structure.fill(resource, doFill);
+        // TODO: Implement
+        return 0;
     }
 
     @Override
@@ -76,14 +75,14 @@ public class TileInputFluid extends FluidTile {
 
     @Override
     public ILiquidTank[] getTanks(ForgeDirection direction) {
-        if (structure == null) return new ILiquidTank[0];
-        return structure.getTanks(ComponentDescriptor.INPUT_FLUID);
+        // TODO: Implement
+        return new ILiquidTank[0];
     }
 
     @Override
     public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) {
-        if (structure == null) return null;
-        return structure.getTank(type, ComponentDescriptor.INPUT_FLUID);
+        // TODO: Implement
+        return null;
     }
 
     @Override

@@ -52,7 +52,6 @@ import net.minecraftforge.common.ForgeDirection;
  */
 public abstract class Tile extends TileEntity implements IWrenchable {
 
-    protected IStructure structure = null;
     protected ForgeDirection orientation = ForgeDirection.UP;
     protected Position position;
 
@@ -73,25 +72,6 @@ public abstract class Tile extends TileEntity implements IWrenchable {
 
     public void updatePosition() {
         position = new Position(xCoord, yCoord, zCoord, worldObj);
-    }
-
-    /**
-     * Setter method for the structure this block is attached to
-     *
-     * @param structure IStructure object to attach to
-     */
-    public void setStructure(IStructure structure) {
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord); // For connecting to pipes etc. on fluids/power connectors
-        this.structure = structure;
-    }
-
-    /**
-     * Getter method for the structure this block is attached to
-     *
-     * @return IStructure this is attached to
-     */
-    public IStructure getStructure() {
-        return structure;
     }
 
     /**
@@ -169,7 +149,6 @@ public abstract class Tile extends TileEntity implements IWrenchable {
         if (worldObj.isRemote || player.getCurrentEquippedItem() == null) return;
         if (player.getCurrentEquippedItem().getItem() != Item.stick) return;
         player.addChatMessage("[Tile] Orientation: " + orientation);
-        if (structure != null) player.addChatMessage("[Tile] IStructure: " + structure);
     }
 
     /**
@@ -179,8 +158,7 @@ public abstract class Tile extends TileEntity implements IWrenchable {
      * @param pkt The data packet
      */
     public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt) {
-        if (worldObj.isRemote) handleClientPacket(pkt); // Client
-        handleServerPacket(pkt);
+        if (!worldObj.isRemote) handleClientPacket(pkt); // Client
     }
 
     /**
@@ -194,23 +172,6 @@ public abstract class Tile extends TileEntity implements IWrenchable {
             orientation = ForgeDirection.getOrientation(i);
             worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
-        }
-    }
-
-    /**
-     * Server-side handler for packets. Used for render-update requests.
-     *
-     * @param pkt The data packet
-     */
-    private void handleServerPacket(Packet132TileEntityData pkt) {
-        if (pkt.actionType == 1) {
-            String pName = pkt.customParam1.getString("player");
-            EntityPlayerMP player = MinecraftServer.getServerConfigurationManager(MinecraftServer.getServer()).getPlayerForUsername(pName);
-            if (player != null) {
-                sendRenderPacket(player); // Send specific
-            } else {
-                sendRenderPacket(); // Fallback to global
-            }
         }
     }
 
@@ -231,7 +192,7 @@ public abstract class Tile extends TileEntity implements IWrenchable {
     }
 
     /**
-     * Helper method - constructs a Packet 132 for orientation updates FROM the server.
+     * Helper method - constructs a Packet 132 for orientation updates from the server to the client.
      *
      * @return The packet to be sent
      */

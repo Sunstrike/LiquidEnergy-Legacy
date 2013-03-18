@@ -1,22 +1,14 @@
 package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 
-import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
-import io.sunstrike.api.liquidenergy.multiblock.IControlTile;
-import io.sunstrike.api.liquidenergy.multiblock.StructureHandler;
 import io.sunstrike.api.liquidenergy.multiblock.Tile;
-import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import io.sunstrike.mods.liquidenergy.helpers.MultiblockDiscoveryHelper;
 import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
-
-import java.util.Collection;
 
 /*
  * TileComponentTank
@@ -44,12 +36,13 @@ import java.util.Collection;
 
 /**
  * Multiblock tank TE
+ * </p>
+ * Also acts as root controller for a structure
  *
  * @author Sunstrike <sunstrike@azurenode.net>
  */
-public class TileComponentTank extends Tile implements IControlTile {
+public class TileComponentTank extends Tile {
 
-    private NBTTagCompound structureNBT = new NBTTagCompound();
     private int ticks = 0;
 
     @Override
@@ -57,13 +50,15 @@ public class TileComponentTank extends Tile implements IControlTile {
         super.updateEntity();
         ticks++;
         if (ticks >= 200) {
+            // TODO: Structure updates
+            /*
             if (structure == null)
                 assembleStructure();
             else
                 structure.checkStructure();
+            */
             ticks = 0;
         }
-        if (structure != null) structure.update();
     }
 
     @Override
@@ -72,40 +67,21 @@ public class TileComponentTank extends Tile implements IControlTile {
     }
 
     @Override
-    public Position getPosition() {
-        return position;
-    }
-
-    @Override
     public void debugInfo(EntityPlayer player) {
-        // Attempt to make a structure
-        if (structure == null)
-            this.assembleStructure();
-        else
-            structure.checkStructure();
+        // TODO: Implement
         super.debugInfo(player);
-        if (structure != null) structure.debugInfo(player);
     }
 
-    @Override
-    public boolean assembleStructure() {
+    private boolean assembleStructure() {
         updatePosition();
         MultiblockDescriptor desc = MultiblockDiscoveryHelper.discoverTransformerStructure(position, ComponentDescriptor.INTERNAL_TANK);
-        if (desc != null) {
-            structure = new StructureHandler(this, desc);
-            structure.readFromNBT(structureNBT);
-            Collection<Position> parts = desc.getAllComponents();
-            for (Position p : parts) {
-                TileEntity te = worldObj.getBlockTileEntity(p.x, p.y, p.z);
-                if (te instanceof Tile) ((Tile) te).setStructure(structure);
-            }
-            return true;
-        }
+        // TODO: Enable as structure
         return false;
     }
 
-    @Override
-    public void invalidateStructure() {
+    private void invalidateStructure() {
+        // TODO: Break structure
+        /*
         LiquidEnergy.logger.info("[TileComponentTank] Destroying structure " + structure);
         MultiblockDescriptor desc = structure.getStructureDescriptor();
         Collection<Position> parts = desc.getAllComponents();
@@ -113,11 +89,7 @@ public class TileComponentTank extends Tile implements IControlTile {
             TileEntity te = worldObj.getBlockTileEntity(p.x, p.y, p.z);
             if (te instanceof Tile) ((Tile) te).setStructure(null);
         }
-    }
-
-    @Override
-    public World getWorld() {
-        return worldObj;
+        */
     }
 
     @Override
@@ -128,15 +100,13 @@ public class TileComponentTank extends Tile implements IControlTile {
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) {
-        structureNBT = nbt.getCompoundTag("structure");
+        // TODO: State restoration
         super.readFromNBT(nbt);
     }
 
     @Override
     public void writeToNBT(NBTTagCompound nbt) {
-        NBTTagCompound structNBT = new NBTTagCompound();
-        if (structure != null) structure.writeToNBT(structNBT);
-        nbt.setCompoundTag("structure", structNBT);
+        // TODO: State archival
         super.writeToNBT(nbt);
     }
 
