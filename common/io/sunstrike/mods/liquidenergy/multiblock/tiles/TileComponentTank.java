@@ -12,6 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.liquids.ILiquidTank;
+import net.minecraftforge.liquids.LiquidTank;
 
 import java.util.Collection;
 
@@ -48,7 +50,11 @@ import java.util.Collection;
  */
 public class TileComponentTank extends Tile {
 
+    private enum Phase {FILLING, CHARGING, DRAINING}
+
     private MultiblockDescriptor structure;
+    private Phase phase = Phase.FILLING;
+    private ILiquidTank tank = new LiquidTank(4000); // 4 buckets at a time
     private int ticks = 0;
 
     @Override
@@ -62,10 +68,16 @@ public class TileComponentTank extends Tile {
                 checkStructure();
             ticks = 0;
         }
-        if (structure != null) structureUpdate(); // Update structure
+        structureUpdate(); // Update structure
     }
 
+    /**
+     * Check if the structure is still valid.
+     *
+     * @return True if still valid, false otherwise.
+     */
     private boolean checkStructure() {
+        if (structure == null) return false;
         boolean valid = structure.isValid();
         if (!valid) {
             invalidateStructure();
@@ -85,12 +97,20 @@ public class TileComponentTank extends Tile {
         super.debugInfo(player);
     }
 
+    /**
+     * Attempt to construct a structure
+     *
+     * @return True if found and saved, false otherwise.
+     */
     private boolean assembleStructure() {
         structure = MultiblockDiscoveryHelper.discoverTransformerStructure(getPosition(), ComponentDescriptor.INTERNAL_TANK);
         if (structure != null) return true;
         return false;
     }
 
+    /**
+     * Disable a structure (set all components controller to null)
+     */
     private void invalidateStructure() {
         LiquidEnergy.logger.info("[TileComponentTank] Destroying structure " + structure);
         Collection<Position> parts = structure.getAllComponents();
@@ -104,7 +124,40 @@ public class TileComponentTank extends Tile {
      * Entity update handler for the whole structure (called in updateEntity())
      */
     private void structureUpdate() {
-        // TODO: Update whole structure
+        if (structure == null) return;
+        // Hand off to phase-specific handlers
+        switch(phase) {
+            case FILLING:
+                phaseFilling();
+                break;
+            case CHARGING:
+                phaseCharging();
+                break;
+            case DRAINING:
+                phaseDraining();
+                break;
+        }
+    }
+
+    /**
+     * Phase - Filling handler
+     */
+    private void phaseFilling() {
+        // TODO: Structure fill
+    }
+
+    /**
+     * Phase - Charging handler
+     */
+    private void phaseCharging() {
+        // TODO: Structure charge
+    }
+
+    /**
+     * Phase - Draining handler
+     */
+    private void phaseDraining() {
+        // TODO: Structure drain
     }
 
     @Override
