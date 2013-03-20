@@ -1,14 +1,12 @@
 package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 
 import io.sunstrike.api.liquidenergy.Position;
-import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
-import io.sunstrike.api.liquidenergy.multiblock.FluidTile;
-import io.sunstrike.api.liquidenergy.multiblock.StructureType;
-import io.sunstrike.api.liquidenergy.multiblock.Tile;
+import io.sunstrike.api.liquidenergy.multiblock.*;
 import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import io.sunstrike.mods.liquidenergy.helpers.MultiblockDiscoveryHelper;
 import io.sunstrike.mods.liquidenergy.multiblock.MultiblockDescriptor;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,16 +45,40 @@ import java.util.Collection;
 /**
  * Multiblock tank TE
  * </p>
- * Acts as root controller for a structure
+ * Acts as root controller for a structure (IControlTile)
  *
  * @author Sunstrike <sunstrike@azurenode.net>
  */
-public class TileComponentTank extends Tile {
+public class TileComponentTank extends Tile implements IControlTile {
 
     private enum Phase {FILLING, CHARGING, DRAINING}
 
     private MultiblockDescriptor structure;
     private Phase phase = Phase.FILLING;
+
+    @Override
+    public int receiveLiquid(LiquidStack li, boolean doFill) {
+        if (phase != Phase.FILLING) return li.amount; // Wrong phase?
+        if (structure.type == StructureType.TRANSFORMER_LIQUIFIER) {
+            // Liquifier - Only accept Water
+            if (li.containsLiquid(new LiquidStack(Block.waterStill, 1))) {
+                return tank.fill(li, doFill);
+            }
+        } else {
+            // Generator - Only accept Navitas
+            if (li.containsLiquid(new LiquidStack(ModObjects.itemLiquidNavitas, 1))) {
+                return tank.fill(li, doFill);
+            }
+        }
+        return li.amount;
+    }
+
+    @Override
+    public int receivePower(int nvCharged) {
+        // TODO: Stub method
+        return nvCharged;
+    }
+
     private ILiquidTank tank = new LiquidTank(4000); // 4 buckets at a time
     private int nvPowerBuffer = 0;
     private int ticks = 0;
@@ -97,7 +119,13 @@ public class TileComponentTank extends Tile {
 
     @Override
     public void debugInfo(EntityPlayer player) {
-        // TODO: Implement
+        player.addChatMessage("[TileComponentTank] Structure: " + structure);
+        player.addChatMessage("[TileComponentTank] Phase: " + phase);
+        LiquidStack li = tank.getLiquid();
+        if (li != null) {
+            player.addChatMessage("[TileComponentTank] Liquid item: " + li.asItemStack().getItem());
+            player.addChatMessage("[TileComponentTank] Liquid level: " + li.amount + "/" + tank.getCapacity());
+        }
         super.debugInfo(player);
     }
 
@@ -122,6 +150,7 @@ public class TileComponentTank extends Tile {
             TileEntity te = worldObj.getBlockTileEntity(p.x, p.y, p.z);
             if (te instanceof Tile) ((Tile) te).setController(null);
         }
+        structure = null;
     }
 
     /**

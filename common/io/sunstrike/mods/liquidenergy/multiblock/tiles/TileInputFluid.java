@@ -1,14 +1,14 @@
 package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 
-import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
 import io.sunstrike.api.liquidenergy.multiblock.FluidTile;
-import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.liquids.LiquidTank;
 
 /*
  * TileInputFluid
@@ -41,6 +41,19 @@ import net.minecraftforge.liquids.LiquidStack;
  */
 public class TileInputFluid extends FluidTile {
 
+    private ILiquidTank tank = new LiquidTank(1000);
+    private int drainPerTick = 5; // How much should we move to the controller per tick?
+
+    @Override
+    public void updateEntity() {
+        LiquidStack li = tank.getLiquid();
+        if (controller != null && li != null) {
+            int spare = controller.receiveLiquid(tank.drain(drainPerTick, false), false);
+            controller.receiveLiquid(tank.drain(drainPerTick - spare, true), true);
+        }
+        super.updateEntity();
+    }
+
     @Override
     public boolean canDumpOut() {
         return false;
@@ -53,13 +66,13 @@ public class TileInputFluid extends FluidTile {
 
     @Override
     public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) {
-        // TODO: Implement
+        if (from == orientation && resource.containsLiquid(new LiquidStack(Block.waterStill, 0))) return tank.fill(resource, doFill);
         return 0;
     }
 
     @Override
     public int fill(int tankIndex, LiquidStack resource, boolean doFill) {
-        // TODO: Implement
+        if (resource.containsLiquid(new LiquidStack(Block.waterStill, 1))) return tank.fill(resource, doFill);
         return 0;
     }
 
@@ -75,14 +88,23 @@ public class TileInputFluid extends FluidTile {
 
     @Override
     public ILiquidTank[] getTanks(ForgeDirection direction) {
-        // TODO: Implement
-        return new ILiquidTank[0];
+        return new ILiquidTank[]{tank};
     }
 
     @Override
     public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) {
-        // TODO: Implement
+        if (direction == orientation && type.containsLiquid(new LiquidStack(Block.waterStill, 0))) return tank;
         return null;
+    }
+
+    @Override
+    public void debugInfo(EntityPlayer player) {
+        LiquidStack li = tank.getLiquid();
+        if (li != null) {
+            player.addChatMessage("[TileInputFluid] Liquid item: " + li.asItemStack().getItem());
+            player.addChatMessage("[TileInputFluid] Liquid level: " + li.amount + "/" + tank.getCapacity());
+        }
+        super.debugInfo(player);
     }
 
     @Override

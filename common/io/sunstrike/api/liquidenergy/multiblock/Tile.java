@@ -1,9 +1,7 @@
 package io.sunstrike.api.liquidenergy.multiblock;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.relauncher.Side;
 import ic2.api.IWrenchable;
 import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.mods.liquidenergy.helpers.Packet250Helper;
@@ -16,7 +14,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet132TileEntityData;
 import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
@@ -53,12 +50,13 @@ import net.minecraftforge.common.ForgeDirection;
 public abstract class Tile extends TileEntity implements IWrenchable {
 
     protected ForgeDirection orientation = ForgeDirection.UP;
-    protected Tile controller;
+    protected IControlTile controller = null;
 
     protected boolean initialRenderDone = false;
     protected boolean failsafeTrip = false; // Used for 0, 0, 0 tiles (talk about edge cases...)
 
     protected int tex = 0;
+    private int ticks = 0;
 
     @Override
     public void setWorldObj(World par1World) {
@@ -92,7 +90,7 @@ public abstract class Tile extends TileEntity implements IWrenchable {
      *
      * @param tile The new controller (or null for structure destruction)
      */
-    public void setController(Tile tile) {
+    public void setController(IControlTile tile) {
         this.controller = tile;
     }
 
@@ -159,6 +157,7 @@ public abstract class Tile extends TileEntity implements IWrenchable {
         if (worldObj.isRemote || player.getCurrentEquippedItem() == null) return;
         if (player.getCurrentEquippedItem().getItem() != Item.stick) return;
         player.addChatMessage("[Tile] Orientation: " + orientation);
+        if (controller != null) player.addChatMessage("[Tile] Controller: " + controller);
     }
 
     /**
@@ -180,7 +179,7 @@ public abstract class Tile extends TileEntity implements IWrenchable {
         if (pkt.actionType == 0) {
             int i = pkt.customParam1.getInteger("orientation");
             orientation = ForgeDirection.getOrientation(i);
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForRenderUpdate(xCoord, yCoord, zCoord);
             worldObj.notifyBlocksOfNeighborChange(xCoord, yCoord, zCoord, worldObj.getBlockId(xCoord, yCoord, zCoord));
         }
     }
@@ -228,7 +227,7 @@ public abstract class Tile extends TileEntity implements IWrenchable {
     @Override
     public void updateEntity() {
         super.updateEntity();
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT && !initialRenderDone) {
+        if (worldObj.isRemote && !initialRenderDone) {
             if (xCoord == 0 && yCoord == 0 && zCoord == 0) {
                 if (failsafeTrip) {
                     requestRenderUpdate();
