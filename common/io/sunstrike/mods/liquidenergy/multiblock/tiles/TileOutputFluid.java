@@ -3,6 +3,7 @@ package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 import io.sunstrike.api.liquidenergy.Position;
 import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
 import io.sunstrike.api.liquidenergy.multiblock.FluidTile;
+import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -12,6 +13,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.liquids.LiquidTank;
 
 /*
  * TileOutputFluid
@@ -43,6 +45,34 @@ import net.minecraftforge.liquids.LiquidStack;
  * @author Sunstrike <sunstrike@azurenode.net>
  */
 public class TileOutputFluid extends FluidTile {
+
+    private ILiquidTank tank = new LiquidTank(250);
+    private int drainPerTick = 10;
+
+    @Override
+    public void debugInfo(EntityPlayer player) {
+        if (tank.getLiquid() != null) {
+            LiquidStack li = tank.getLiquid();
+            player.addChatMessage("[TileOutputFluid] Liquid item: " + li.asItemStack().getItem());
+            player.addChatMessage("[TileOutputFluid] Liquid level: " + li.amount + "/" + tank.getCapacity());
+        }
+        super.debugInfo(player);
+    }
+
+    @Override
+    public int addToDumpQueue(LiquidStack resource, boolean doFill) {
+        if (resource.containsLiquid(new LiquidStack(ModObjects.itemLiquidNavitas, 0))) return tank.fill(resource, doFill);
+        return 0;
+    }
+
+    @Override
+    public void updateEntity() {
+        int drained = drainPerTick - dump(tank.drain(drainPerTick, false), true);
+        LiquidEnergy.logger.info("[TileOutputFluid] drained=" + drained);
+        LiquidStack drain = tank.drain(drained, true);
+        if (drain != null) LiquidEnergy.logger.info("{TileOutputFluid] Liquid: " + drain.asItemStack().getItem() + ", Amount: " + drain.amount);
+        super.updateEntity();
+    }
 
     @Override
     public boolean canDumpOut() {
@@ -82,13 +112,13 @@ public class TileOutputFluid extends FluidTile {
 
     @Override
     public ILiquidTank[] getTanks(ForgeDirection direction) {
-        // TODO: Implement
+        if (direction == orientation) return new ILiquidTank[]{tank};
         return new ILiquidTank[0];
     }
 
     @Override
     public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) {
-        // TODO: Implement
+        if (direction == orientation && type.containsLiquid(new LiquidStack(ModObjects.itemLiquidNavitas, 0))) return tank;
         return null;
     }
 

@@ -53,4 +53,13 @@ public abstract class FluidTile extends Tile implements ITankContainer {
      */
     public abstract int dump(LiquidStack resource, boolean doFill);
 
+    /**
+     * Add liquid to dump queue tank
+     *
+     * @param resource LiquidStack to attempt to eject
+     * @param doFill Whether or not to commit the action
+     * @return Amount dumped into internal tank
+     */
+    public abstract int addToDumpQueue(LiquidStack resource, boolean doFill);
+
 }

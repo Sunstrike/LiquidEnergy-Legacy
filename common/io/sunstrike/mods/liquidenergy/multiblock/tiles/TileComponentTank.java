@@ -234,8 +234,9 @@ public class TileComponentTank extends Tile implements IControlTile {
         Position outPos = structure.getComponent(ComponentDescriptor.OUTPUT_FLUID);
         TileEntity ft = worldObj.getBlockTileEntity(outPos.x, outPos.y, outPos.z);
         if (ft instanceof FluidTile && ((FluidTile) ft).canDumpOut()) {
-            int dumped = ((FluidTile) ft).dump(tank.drain(4, true), true);
-            int ret = 4 - dumped;
+            LiquidStack drained = tank.drain(tank.getCapacity(), true);
+            int dumped = ((FluidTile) ft).addToDumpQueue(drained, true);
+            int ret = drained.amount - dumped;
             if (ret != 0) tank.fill(new LiquidStack(ModObjects.itemLiquidNavitas, ret), true);
         }
 

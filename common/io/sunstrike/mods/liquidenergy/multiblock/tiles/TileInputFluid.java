@@ -45,6 +45,11 @@ public class TileInputFluid extends FluidTile {
     private int drainPerTick = 10; // How much should we move to the controller per tick?
 
     @Override
+    public int addToDumpQueue(LiquidStack resource, boolean doFill) {
+        return 0;
+    }
+
+    @Override
     public void updateEntity() {
         LiquidStack li = tank.getLiquid();
         if (controller != null && li != null) {

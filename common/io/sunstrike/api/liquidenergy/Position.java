@@ -61,16 +61,16 @@ public class Position {
                 p.y--;
                 break;
             case NORTH:
-                p.x++;
+                p.z--;
                 break;
             case SOUTH:
-                p.x--;
-                break;
-            case EAST:
                 p.z++;
                 break;
+            case EAST:
+                p.x++;
+                break;
             case WEST:
-                p.z--;
+                p.x--;
                 break;
             default:
                 break;
