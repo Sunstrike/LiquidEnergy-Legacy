@@ -38,7 +38,7 @@ public interface IControlTile {
      *
      * @param li LiquidStack to input
      * @param doFill Whether to commit the transaction
-     * @return Amount received (initial - return = amount left)
+     * @return Amount used (initial - return = amount left)
      */
     public int receiveLiquid(LiquidStack li, boolean doFill);
 

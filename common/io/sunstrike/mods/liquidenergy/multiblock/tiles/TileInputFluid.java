@@ -42,14 +42,14 @@ import net.minecraftforge.liquids.LiquidTank;
 public class TileInputFluid extends FluidTile {
 
     private ILiquidTank tank = new LiquidTank(1000);
-    private int drainPerTick = 5; // How much should we move to the controller per tick?
+    private int drainPerTick = 10; // How much should we move to the controller per tick?
 
     @Override
     public void updateEntity() {
         LiquidStack li = tank.getLiquid();
         if (controller != null && li != null) {
-            int spare = controller.receiveLiquid(tank.drain(drainPerTick, false), false);
-            controller.receiveLiquid(tank.drain(drainPerTick - spare, true), true);
+            int drain = controller.receiveLiquid(tank.drain(drainPerTick, false), false);
+            controller.receiveLiquid(tank.drain(drain, true), true);
         }
         super.updateEntity();
     }
@@ -72,7 +72,7 @@ public class TileInputFluid extends FluidTile {
 
     @Override
     public int fill(int tankIndex, LiquidStack resource, boolean doFill) {
-        if (resource.containsLiquid(new LiquidStack(Block.waterStill, 1))) return tank.fill(resource, doFill);
+        if (resource.containsLiquid(new LiquidStack(Block.waterStill, 0))) return tank.fill(resource, doFill);
         return 0;
     }
 

@@ -58,19 +58,19 @@ public class TileComponentTank extends Tile implements IControlTile {
 
     @Override
     public int receiveLiquid(LiquidStack li, boolean doFill) {
-        if (phase != Phase.FILLING) return li.amount; // Wrong phase?
+        if (phase != Phase.FILLING) return 0; // Wrong phase?
         if (structure.type == StructureType.TRANSFORMER_LIQUIFIER) {
             // Liquifier - Only accept Water
-            if (li.containsLiquid(new LiquidStack(Block.waterStill, 1))) {
+            if (li.containsLiquid(new LiquidStack(Block.waterStill, 0))) {
                 return tank.fill(li, doFill);
             }
         } else {
             // Generator - Only accept Navitas
-            if (li.containsLiquid(new LiquidStack(ModObjects.itemLiquidNavitas, 1))) {
+            if (li.containsLiquid(new LiquidStack(ModObjects.itemLiquidNavitas, 0))) {
                 return tank.fill(li, doFill);
             }
         }
-        return li.amount;
+        return 0;
     }
 
     @Override
@@ -119,14 +119,15 @@ public class TileComponentTank extends Tile implements IControlTile {
 
     @Override
     public void debugInfo(EntityPlayer player) {
+        super.debugInfo(player);
         player.addChatMessage("[TileComponentTank] Structure: " + structure);
+        if (structure != null) player.addChatMessage("[TileComponentTank] Type: " + structure.type);
         player.addChatMessage("[TileComponentTank] Phase: " + phase);
         LiquidStack li = tank.getLiquid();
         if (li != null) {
             player.addChatMessage("[TileComponentTank] Liquid item: " + li.asItemStack().getItem());
             player.addChatMessage("[TileComponentTank] Liquid level: " + li.amount + "/" + tank.getCapacity());
         }
-        super.debugInfo(player);
     }
 
     /**
@@ -136,7 +137,14 @@ public class TileComponentTank extends Tile implements IControlTile {
      */
     private boolean assembleStructure() {
         structure = MultiblockDiscoveryHelper.discoverTransformerStructure(getPosition(), ComponentDescriptor.INTERNAL_TANK);
-        if (structure != null) return true;
+        if (structure != null) {
+            Collection<Position> parts = structure.getAllComponents();
+            for (Position p : parts) {
+                TileEntity te = worldObj.getBlockTileEntity(p.x, p.y, p.z);
+                if (te instanceof Tile) ((Tile) te).setController(this);
+            }
+            return true;
+        }
         return false;
     }
 
