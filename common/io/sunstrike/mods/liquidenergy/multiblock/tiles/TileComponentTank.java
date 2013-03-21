@@ -56,6 +56,10 @@ public class TileComponentTank extends Tile implements IControlTile {
     private MultiblockDescriptor structure;
     private Phase phase = Phase.FILLING;
 
+    private ILiquidTank tank = new LiquidTank(4000); // 4 buckets at a time
+    private int nvPowerBuffer = 0;
+    private int ticks = 200; // So it runs on load rather than after 10s
+
     @Override
     public int receiveLiquid(LiquidStack li, boolean doFill) {
         if (phase != Phase.FILLING) return 0; // Wrong phase?
@@ -75,13 +79,20 @@ public class TileComponentTank extends Tile implements IControlTile {
 
     @Override
     public int receivePower(int nvCharged) {
-        // TODO: Stub method
-        return nvCharged;
+        nvPowerBuffer += nvCharged;
+        if (nvPowerBuffer > tank.getCapacity()) {
+            int left = nvPowerBuffer - tank.getCapacity();
+            nvPowerBuffer = tank.getCapacity();
+            return left;
+        }
+        return 0;
     }
 
-    private ILiquidTank tank = new LiquidTank(4000); // 4 buckets at a time
-    private int nvPowerBuffer = 0;
-    private int ticks = 0;
+    @Override
+    public int wantedNvPower() {
+        if (phase != Phase.CHARGING) return 0;
+        return tank.getCapacity() - nvPowerBuffer;
+    }
 
     @Override
     public void updateEntity() {
@@ -123,6 +134,7 @@ public class TileComponentTank extends Tile implements IControlTile {
         player.addChatMessage("[TileComponentTank] Structure: " + structure);
         if (structure != null) player.addChatMessage("[TileComponentTank] Type: " + structure.type);
         player.addChatMessage("[TileComponentTank] Phase: " + phase);
+        player.addChatMessage("[TileComponentTank] NV Power Buffer: " + nvPowerBuffer);
         LiquidStack li = tank.getLiquid();
         if (li != null) {
             player.addChatMessage("[TileComponentTank] Liquid item: " + li.asItemStack().getItem());

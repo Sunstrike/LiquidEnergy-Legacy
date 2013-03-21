@@ -50,4 +50,11 @@ public interface IControlTile {
      */
     public int receivePower(int nvCharged);
 
+    /**
+     * Get remaining Navitas capacity (for e.g. EU input blocks)
+     *
+     * @return Amount of space left for Navitas
+     */
+    public int wantedNvPower();
+
 }

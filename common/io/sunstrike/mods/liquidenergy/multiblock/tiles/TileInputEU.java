@@ -5,6 +5,7 @@ import ic2.api.energy.tile.IEnergySink;
 import io.sunstrike.api.liquidenergy.multiblock.IC2Tile;
 import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
+import io.sunstrike.mods.liquidenergy.configuration.Settings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -54,14 +55,19 @@ public class TileInputEU extends IC2Tile implements IEnergySink {
 
     @Override
     public int demandsEnergy() {
-        // TODO: Implement
+        if (controller != null) {
+            int t = controller.wantedNvPower()*Settings.euPerNv;
+            LiquidEnergy.logger.info("Demanding: " + t);
+            return t;
+        }
         return 0;
     }
 
     @Override
     public int injectEnergy(Direction directionFrom, int amount) {
-        // TODO; Implement
-        return amount;
+        LiquidEnergy.logger.info("Injection: " + amount);
+        if (controller == null || directionFrom.toForgeDirection() != orientation.getOpposite()) return amount;
+        return controller.receivePower(amount/Settings.euPerNv)*Settings.euPerNv;
     }
 
     @Override
