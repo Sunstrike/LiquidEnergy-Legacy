@@ -18,6 +18,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /*
  * Tile
  * io.sunstrike.api.liquidenergy.multiblock
@@ -156,8 +159,15 @@ public abstract class Tile extends TileEntity implements IWrenchable {
     public void debugInfo(EntityPlayer player) {
         if (worldObj.isRemote || player.getCurrentEquippedItem() == null) return;
         if (player.getCurrentEquippedItem().getItem() != Item.stick) return;
-        player.addChatMessage("[Tile] Orientation: " + orientation);
-        if (controller != null) player.addChatMessage("[Tile] Controller: " + controller);
+        player.addChatMessage("[" + getClassName() + "] Orientation: " + orientation);
+        if (controller != null) player.addChatMessage("[" + getClassName() + "] Controller: " + controller);
+    }
+
+    private Pattern classPattern = Pattern.compile(".+\\.(.+)");
+    protected String getClassName() {
+        Matcher match = classPattern.matcher(getClass().getName());
+        match.find();
+        return match.group(1);
     }
 
     /**

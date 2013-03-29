@@ -1,13 +1,10 @@
 package io.sunstrike.mods.liquidenergy.multiblock.tiles;
 
 import io.sunstrike.api.liquidenergy.Position;
-import io.sunstrike.api.liquidenergy.multiblock.ComponentDescriptor;
 import io.sunstrike.api.liquidenergy.multiblock.FluidTile;
-import io.sunstrike.mods.liquidenergy.LiquidEnergy;
 import io.sunstrike.mods.liquidenergy.configuration.ModObjects;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ILiquidTank;
@@ -53,8 +50,8 @@ public class TileOutputFluid extends FluidTile {
     public void debugInfo(EntityPlayer player) {
         if (tank.getLiquid() != null) {
             LiquidStack li = tank.getLiquid();
-            player.addChatMessage("[TileOutputFluid] Liquid item: " + li.asItemStack().getItem());
-            player.addChatMessage("[TileOutputFluid] Liquid level: " + li.amount + "/" + tank.getCapacity());
+            player.addChatMessage("[" + getClassName() + "] Liquid item: " + li.asItemStack().getItem());
+            player.addChatMessage("[" + getClassName() + "] Liquid level: " + li.amount + "/" + tank.getCapacity());
         }
         super.debugInfo(player);
     }
@@ -68,9 +65,7 @@ public class TileOutputFluid extends FluidTile {
     @Override
     public void updateEntity() {
         int drained = drainPerTick - dump(tank.drain(drainPerTick, false), true);
-        LiquidEnergy.logger.info("[TileOutputFluid] drained=" + drained);
-        LiquidStack drain = tank.drain(drained, true);
-        if (drain != null) LiquidEnergy.logger.info("{TileOutputFluid] Liquid: " + drain.asItemStack().getItem() + ", Amount: " + drain.amount);
+        tank.drain(drained, true);
         super.updateEntity();
     }
 

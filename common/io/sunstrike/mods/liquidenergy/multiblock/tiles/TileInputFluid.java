@@ -106,8 +106,8 @@ public class TileInputFluid extends FluidTile {
     public void debugInfo(EntityPlayer player) {
         LiquidStack li = tank.getLiquid();
         if (li != null) {
-            player.addChatMessage("[TileInputFluid] Liquid item: " + li.asItemStack().getItem());
-            player.addChatMessage("[TileInputFluid] Liquid level: " + li.amount + "/" + tank.getCapacity());
+            player.addChatMessage("[" + getClassName() + "] Liquid item: " + li.asItemStack().getItem());
+            player.addChatMessage("[" + getClassName() + "] Liquid level: " + li.amount + "/" + tank.getCapacity());
         }
         super.debugInfo(player);
     }

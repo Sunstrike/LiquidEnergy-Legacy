@@ -131,14 +131,14 @@ public class TileComponentTank extends Tile implements IControlTile {
     @Override
     public void debugInfo(EntityPlayer player) {
         super.debugInfo(player);
-        player.addChatMessage("[TileComponentTank] Structure: " + structure);
-        if (structure != null) player.addChatMessage("[TileComponentTank] Type: " + structure.type);
-        player.addChatMessage("[TileComponentTank] Phase: " + phase);
-        player.addChatMessage("[TileComponentTank] NV Power Buffer: " + nvPowerBuffer);
+        player.addChatMessage("[" + getClassName() + "] Structure: " + structure);
+        if (structure != null) player.addChatMessage("[" + getClassName() + "] Type: " + structure.type);
+        player.addChatMessage("[" + getClassName() + "] Phase: " + phase);
+        player.addChatMessage("[" + getClassName() + "] NV Power Buffer: " + nvPowerBuffer);
         LiquidStack li = tank.getLiquid();
         if (li != null) {
-            player.addChatMessage("[TileComponentTank] Liquid item: " + li.asItemStack().getItem());
-            player.addChatMessage("[TileComponentTank] Liquid level: " + li.amount + "/" + tank.getCapacity());
+            player.addChatMessage("[" + getClassName() + "] Liquid item: " + li.asItemStack().getItem());
+            player.addChatMessage("[" + getClassName() + "] Liquid level: " + li.amount + "/" + tank.getCapacity());
         }
     }
 
